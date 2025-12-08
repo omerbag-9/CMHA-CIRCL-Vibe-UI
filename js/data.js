@@ -215,8 +215,30 @@ const dataManager = {
     }
 };
 
-// Initialize data on load
-if (typeof window !== 'undefined') {
-    dataManager.init();
-}
+// Initialize data on load - ensure it runs immediately
+(function() {
+    'use strict';
+    
+    function initDataManager() {
+        if (typeof dataManager !== 'undefined' && typeof dataManager.init === 'function') {
+            try {
+                dataManager.init();
+            } catch (error) {
+                console.error('Error initializing dataManager:', error);
+            }
+        }
+    }
+    
+    // Initialize immediately if possible
+    if (typeof window !== 'undefined') {
+        // Try multiple times to ensure it runs
+        initDataManager();
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initDataManager);
+        }
+        
+        window.addEventListener('load', initDataManager);
+    }
+})();
 

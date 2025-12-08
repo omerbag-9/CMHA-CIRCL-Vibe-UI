@@ -172,40 +172,101 @@ const dummyData = {
 
     // Initialize all dummy data
     init() {
-        // Only add dummy data if there are no cases
-        const existingCases = dataManager.getCases();
-        if (existingCases.length === 0) {
-            const cases = this.generateCases();
-            localStorage.setItem('crcl_cases', JSON.stringify(cases));
-            console.log(`✅ Generated ${cases.length} dummy cases`);
-        }
+        try {
+            // Check if localStorage is available
+            if (typeof localStorage === 'undefined') {
+                console.warn('localStorage not available');
+                return;
+            }
+            
+            // Only add dummy data if there are no cases
+            let existingCases = [];
+            try {
+                existingCases = dataManager.getCases();
+            } catch (e) {
+                console.warn('Error getting cases:', e);
+                existingCases = [];
+            }
+            
+            if (existingCases.length === 0) {
+                const cases = this.generateCases();
+                localStorage.setItem('crcl_cases', JSON.stringify(cases));
+                console.log(`✅ Generated ${cases.length} dummy cases`);
+            } else {
+                console.log(`ℹ️ ${existingCases.length} cases already exist, skipping dummy data generation`);
+            }
 
-        // Only add dummy messages if there are no messages
-        const existingMessages = dataManager.getMessages();
-        if (existingMessages.length === 0) {
-            const messages = this.generateMessages();
-            localStorage.setItem('crcl_messages', JSON.stringify(messages));
-            console.log(`✅ Generated ${messages.length} dummy messages`);
+            // Only add dummy messages if there are no messages
+            let existingMessages = [];
+            try {
+                existingMessages = dataManager.getMessages();
+            } catch (e) {
+                console.warn('Error getting messages:', e);
+                existingMessages = [];
+            }
+            
+            if (existingMessages.length === 0) {
+                const messages = this.generateMessages();
+                localStorage.setItem('crcl_messages', JSON.stringify(messages));
+                console.log(`✅ Generated ${messages.length} dummy messages`);
+            } else {
+                console.log(`ℹ️ ${existingMessages.length} messages already exist, skipping dummy data generation`);
+            }
+        } catch (error) {
+            console.error('Error in dummyData.init():', error);
         }
+    },
+    
+    // Force initialization (for testing/debugging)
+    forceInit() {
+        // Clear existing data and regenerate
+        localStorage.removeItem('crcl_cases');
+        localStorage.removeItem('crcl_messages');
+        this.init();
     }
 };
 
 // Initialize dummy data when script loads
-if (typeof window !== 'undefined') {
-    // Wait for dataManager to be available
-    const initDummyData = () => {
-        if (typeof dataManager !== 'undefined' && typeof utils !== 'undefined') {
-            dummyData.init();
-        } else {
-            setTimeout(initDummyData, 50);
-        }
-    };
+(function() {
+    'use strict';
     
-    // Initialize after DOM is ready
+    function initDummyData() {
+        // Check if dataManager and utils are available
+        if (typeof dataManager === 'undefined' || typeof utils === 'undefined') {
+            // Retry after a short delay
+            setTimeout(initDummyData, 100);
+            return;
+        }
+        
+        // Ensure dataManager is initialized first
+        if (typeof dataManager.init === 'function') {
+            dataManager.init();
+        }
+        
+        // Now initialize dummy data
+        try {
+            dummyData.init();
+        } catch (error) {
+            console.error('Error initializing dummy data:', error);
+            // Retry once more
+            setTimeout(initDummyData, 200);
+        }
+    }
+    
+    // Multiple initialization strategies to ensure it works
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initDummyData);
     } else {
-        setTimeout(initDummyData, 100);
+        // DOM already loaded, try immediately
+        initDummyData();
     }
-}
+    
+    // Also try after window load as backup
+    window.addEventListener('load', function() {
+        setTimeout(initDummyData, 100);
+    });
+    
+    // Final fallback - try after a longer delay
+    setTimeout(initDummyData, 500);
+})();
 
