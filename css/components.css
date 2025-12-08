@@ -179,13 +179,17 @@
 }
 
 .badge-urgent {
-    background-color: var(--warning);
-    color: var(--black);
+    background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+    color: white;
+    box-shadow: 0 2px 6px rgba(255, 152, 0, 0.25);
+    border-radius: 20px;
 }
 
 .badge-emergency {
-    background-color: var(--error);
-    color: var(--white);
+    background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%);
+    color: white;
+    box-shadow: 0 2px 6px rgba(244, 67, 54, 0.25);
+    border-radius: 20px;
 }
 
 .badge-closed {
@@ -383,5 +387,219 @@
 
 .success-message p:last-child {
     margin-bottom: 0;
+}
+
+/* Badge Base Styles */
+.badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.badge-normal {
+    background: linear-gradient(135deg, #9E9E9E 0%, #757575 100%);
+    color: white;
+    box-shadow: 0 2px 6px rgba(158, 158, 158, 0.25);
+    border-radius: 20px;
+}
+
+/* Status Sections (Stacked Vertically) */
+.cases-status-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 20px;
+}
+
+.status-section {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--dark-gray);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.status-section-header {
+    padding: 16px 20px;
+    background: var(--charcoal);
+    border-bottom: 2px solid var(--dark-gray);
+}
+
+.status-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-icon {
+    font-size: 20px;
+}
+
+.status-section-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex: 1;
+}
+
+.status-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 8px;
+    background: var(--primary-green);
+    color: white;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-section-content {
+    overflow-x: auto;
+}
+
+.status-section-content .cases-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+.status-section-content .cases-table thead {
+    background: var(--charcoal);
+    border-bottom: 2px solid var(--dark-gray);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.status-section-content .cases-table th {
+    padding: 12px 10px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.status-section-content .cases-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--dark-gray);
+    color: var(--text-primary);
+    font-size: 13px;
+}
+
+.status-section-content .cases-table tbody tr {
+    transition: background-color 0.2s;
+}
+
+.status-section-content .cases-table tbody tr:hover {
+    background-color: var(--charcoal);
+}
+
+.status-section-content .cases-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.case-id-link {
+    color: var(--primary-green);
+    text-decoration: none;
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.case-id-link:hover {
+    text-decoration: underline;
+}
+
+.case-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.case-name-cell strong {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.public-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.15) 0%, rgba(76, 175, 80, 0.1) 100%);
+    color: var(--primary-green);
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+.phone-link {
+    color: var(--primary-green);
+    text-decoration: none;
+}
+
+.phone-link:hover {
+    text-decoration: underline;
+}
+
+.assignee-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.assignee-name {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.date-cell {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.text-muted {
+    color: var(--medium-gray);
+    font-style: italic;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn-view {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 6px;
+    background: var(--charcoal);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: all 0.2s;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid var(--dark-gray);
+}
+
+.btn-view:hover {
+    background: var(--primary-green);
+    color: white;
+    border-color: var(--primary-green);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
 }
 
