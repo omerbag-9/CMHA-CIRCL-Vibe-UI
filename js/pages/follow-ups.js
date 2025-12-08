@@ -20,9 +20,19 @@ let chatPollInterval = null;
 function loadFollowUps() {
     const allCases = dataManager.getCases();
     const now = new Date();
+    const searchTerm = document.getElementById('search-followups')?.value.toLowerCase() || '';
     
     // Filter cases with follow-ups
-    const followupCases = allCases.filter(c => c.followupScheduled || c.followupTime);
+    let followupCases = allCases.filter(c => c.followupScheduled || c.followupTime);
+    
+    // Apply search filter
+    if (searchTerm) {
+        followupCases = followupCases.filter(c => 
+            (c.callerName && c.callerName.toLowerCase().includes(searchTerm)) ||
+            (c.caseId && c.caseId.toLowerCase().includes(searchTerm)) ||
+            (c.callerLocation && c.callerLocation.toLowerCase().includes(searchTerm))
+        );
+    }
     
     // Separate into due and scheduled
     const dueFollowups = [];
@@ -105,6 +115,7 @@ function renderFollowUps(followups, containerId, isDue) {
 function setupFilters() {
     const statusFilter = document.getElementById('filter-followup-status');
     const timeRangeFilter = document.getElementById('filter-time-range');
+    const searchInput = document.getElementById('search-followups');
     
     if (statusFilter) {
         statusFilter.addEventListener('change', loadFollowUps);
@@ -112,6 +123,10 @@ function setupFilters() {
     
     if (timeRangeFilter) {
         timeRangeFilter.addEventListener('change', loadFollowUps);
+    }
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', utils.debounce(loadFollowUps, 300));
     }
 }
 

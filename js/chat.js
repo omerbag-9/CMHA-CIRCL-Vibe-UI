@@ -240,10 +240,22 @@ const chat = {
         const container = document.getElementById('chat-contacts');
         if (!container) return;
 
+        if (filtered.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state" style="padding: 24px; text-align: center;">
+                    <p style="color: var(--text-secondary); font-size: 14px;">No conversations found</p>
+                </div>
+            `;
+            return;
+        }
+
         container.innerHTML = filtered.map(conv => `
             <div class="chat-contact ${conv.userId === this.currentConversation ? 'active' : ''}" 
                  onclick="chat.openConversation('${conv.userId}')">
-                <div class="chat-contact-name">${conv.userName}</div>
+                <div class="chat-contact-name">
+                    ${conv.userName}
+                    ${conv.unread > 0 ? `<span class="badge badge-urgent" style="margin-left: 8px; font-size: 10px; padding: 2px 6px;">${conv.unread}</span>` : ''}
+                </div>
                 <div class="chat-contact-preview">${conv.lastMessage || 'No messages'}</div>
             </div>
         `).join('');
