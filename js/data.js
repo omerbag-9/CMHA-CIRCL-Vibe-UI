@@ -81,6 +81,25 @@ const dataManager = {
         return null;
     },
 
+    createUser(userData) {
+        const users = this.getUsers();
+        
+        // Check if user already exists
+        if (users.find(u => u.email === userData.email)) {
+            return { error: 'User with this email already exists' };
+        }
+
+        const newUser = {
+            id: utils.generateId('user'),
+            ...userData,
+            createdAt: new Date().toISOString()
+        };
+
+        users.push(newUser);
+        localStorage.setItem('crcl_users', JSON.stringify(users));
+        return newUser;
+    },
+
     // Cases
     getCases() {
         return JSON.parse(localStorage.getItem('crcl_cases') || '[]');

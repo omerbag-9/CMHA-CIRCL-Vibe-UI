@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - CRCL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/utilities.css">
+</head>
+<body>
+    <div id="app">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <h1>CRCL</h1>
+                    <p>Create New Account</p>
+                </div>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="reg-name">Full Name *</label>
+                        <input type="text" id="reg-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-email">Email Address *</label>
+                        <input type="email" id="reg-email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password">Password *</label>
+                        <input type="password" id="reg-password" name="password" required minlength="6">
+                        <small style="color: var(--light-gray); font-size: 12px;">Minimum 6 characters</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-role">Role *</label>
+                        <select id="reg-role" name="role" required>
+                            <option value="">Select a role</option>
+                            <option value="dispatcher">Dispatcher</option>
+                            <option value="responder">Crisis Responder</option>
+                            <option value="agency_manager">Agency Manager</option>
+                            <option value="cmha_admin">CMHA Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="agency-group" style="display: none;">
+                        <label for="reg-agency">Agency ID</label>
+                        <input type="text" id="reg-agency" name="agencyId" placeholder="agency1">
+                        <small style="color: var(--light-gray); font-size: 12px;">Optional - Leave blank for admin</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                    <div id="register-error" class="error-message"></div>
+                    <div id="register-success" class="success-message" style="display: none;">
+                        <p>Account created successfully! Redirecting to login...</p>
+                    </div>
+                </form>
+                <div class="login-footer">
+                    <a href="index.html">Back to Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/data.js"></script>
+    <script>
+        // Initialize data
+        dataManager.init();
+
+        // Role change handler
+        document.getElementById('reg-role').addEventListener('change', (e) => {
+            const agencyGroup = document.getElementById('agency-group');
+            if (e.target.value === 'cmha_admin') {
+                agencyGroup.style.display = 'none';
+            } else {
+                agencyGroup.style.display = 'block';
+            }
+        });
+
+        // Form submission
+        document.getElementById('register-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const password = formData.get('password');
+            const role = formData.get('role');
+            const agencyId = formData.get('agencyId') || null;
+
+            const errorDiv = document.getElementById('register-error');
+            const successDiv = document.getElementById('register-success');
+
+            // Validate
+            if (!name || !email || !password || !role) {
+                errorDiv.textContent = 'Please fill in all required fields';
+                errorDiv.classList.add('show');
+                return;
+            }
+
+            if (password.length < 6) {
+                errorDiv.textContent = 'Password must be at least 6 characters';
+                errorDiv.classList.add('show');
+                return;
+            }
+
+            // Create user
+            const userData = {
+                name,
+                email,
+                password,
+                role,
+                agencyId: role === 'cmha_admin' ? null : (agencyId || 'agency1')
+            };
+
+            const result = dataManager.createUser(userData);
+
+            if (result.error) {
+                errorDiv.textContent = result.error;
+                errorDiv.classList.add('show');
+                successDiv.style.display = 'none';
+            } else {
+                errorDiv.classList.remove('show');
+                successDiv.style.display = 'block';
+                
+                // Redirect to login after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
+
