@@ -82,16 +82,17 @@
 
 /* Cards */
 .stat-card {
-    background-color: var(--charcoal);
+    background-color: var(--white);
     border: 1px solid var(--dark-gray);
     border-radius: 8px;
     padding: 24px;
     text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .stat-label {
     font-size: 14px;
-    color: var(--light-gray);
+    color: var(--text-secondary);
     margin-bottom: 8px;
 }
 
@@ -104,22 +105,24 @@
 
 .stat-change {
     font-size: 12px;
-    color: var(--light-gray);
+    color: var(--text-secondary);
 }
 
 .case-card {
-    background-color: var(--charcoal);
+    background-color: var(--white);
     border: 1px solid var(--dark-gray);
     border-radius: 8px;
     padding: 16px;
     margin-bottom: 16px;
     transition: all 0.2s;
     cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .case-card:hover {
-    background-color: var(--dark-gray);
+    background-color: var(--charcoal);
     border-color: var(--primary-green);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .case-card-header {
@@ -133,7 +136,7 @@
     font-family: 'Courier New', monospace;
     font-size: 14px;
     font-weight: 600;
-    color: var(--white);
+    color: var(--text-primary);
 }
 
 /* Badges */
@@ -186,7 +189,7 @@
 }
 
 .modal {
-    background-color: var(--charcoal);
+    background-color: var(--white);
     border: 1px solid var(--dark-gray);
     border-radius: 8px;
     width: 90%;
@@ -195,6 +198,7 @@
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
 }
 
 .modal-header {
@@ -213,7 +217,7 @@
 .modal-close {
     background: none;
     border: none;
-    color: var(--white);
+    color: var(--text-primary);
     font-size: 24px;
     cursor: pointer;
     padding: 0;
@@ -251,11 +255,12 @@
     margin-bottom: 12px;
     cursor: pointer;
     transition: all 0.2s;
+    background-color: var(--white);
 }
 
 .responder-item:hover {
     border-color: var(--primary-green);
-    background-color: var(--dark-gray);
+    background-color: var(--charcoal);
 }
 
 .responder-item.selected {
@@ -270,7 +275,7 @@
 
 .responder-info {
     font-size: 12px;
-    color: var(--light-gray);
+    color: var(--text-secondary);
 }
 
 /* Timeline */
@@ -308,7 +313,7 @@
     height: 12px;
     border-radius: 50%;
     background-color: var(--primary-green);
-    border: 2px solid var(--charcoal);
+    border: 2px solid var(--white);
 }
 
 .timeline-content {
@@ -317,7 +322,7 @@
 
 .timeline-time {
     font-size: 12px;
-    color: var(--light-gray);
+    color: var(--text-secondary);
     margin-bottom: 4px;
 }
 
@@ -329,7 +334,7 @@
 .empty-state {
     text-align: center;
     padding: 48px;
-    color: var(--light-gray);
+    color: var(--text-secondary);
 }
 
 .empty-state-icon {

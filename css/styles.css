@@ -7,14 +7,16 @@
     --primary-green-dark: #00A043;
     --primary-green-light: #4CAF50;
     --black: #000000;
-    --charcoal: #1A1A1A;
-    --dark-gray: #2D2D2D;
-    --medium-gray: #4A4A4A;
-    --light-gray: #6B6B6B;
+    --charcoal: #F5F5F5;
+    --dark-gray: #E0E0E0;
+    --medium-gray: #BDBDBD;
+    --light-gray: #757575;
     --white: #FFFFFF;
     --error: #F44336;
     --warning: #FFC107;
     --info: #2196F3;
+    --text-primary: #000000;
+    --text-secondary: #424242;
 }
 
 * {
@@ -25,8 +27,8 @@
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background-color: var(--black);
-    color: var(--white);
+    background-color: var(--white);
+    color: var(--text-primary);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -52,13 +54,14 @@ body {
 
 .sidebar {
     width: 240px;
-    background-color: var(--charcoal);
+    background-color: var(--white);
     border-right: 1px solid var(--dark-gray);
     display: flex;
     flex-direction: column;
     position: fixed;
     height: 100vh;
     z-index: 100;
+    box-shadow: 2px 0 4px rgba(0,0,0,0.1);
 }
 
 .sidebar-header {
@@ -81,7 +84,7 @@ body {
     display: flex;
     align-items: center;
     padding: 12px 24px;
-    color: var(--light-gray);
+    color: var(--text-secondary);
     text-decoration: none;
     transition: all 0.2s;
     border-left: 3px solid transparent;
@@ -89,13 +92,14 @@ body {
 
 .nav-item:hover {
     background-color: var(--dark-gray);
-    color: var(--white);
+    color: var(--text-primary);
 }
 
 .nav-item.active {
-    background-color: var(--dark-gray);
+    background-color: rgba(0, 200, 83, 0.1);
     border-left-color: var(--primary-green);
-    color: var(--white);
+    color: var(--primary-green);
+    font-weight: 600;
 }
 
 .nav-icon {
@@ -108,12 +112,12 @@ body {
     margin-left: 240px;
     display: flex;
     flex-direction: column;
-    background-color: var(--black);
+    background-color: var(--white);
 }
 
 .top-bar {
     height: 64px;
-    background-color: var(--black);
+    background-color: var(--white);
     border-bottom: 1px solid var(--dark-gray);
     display: flex;
     align-items: center;
@@ -122,6 +126,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 10;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .top-bar-left {
@@ -240,17 +245,18 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    background-color: var(--black);
+    background-color: var(--white);
     padding: 24px;
 }
 
 .login-card {
-    background-color: var(--charcoal);
+    background-color: var(--white);
     border: 1px solid var(--dark-gray);
     border-radius: 8px;
     padding: 48px;
     width: 100%;
     max-width: 400px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .login-header {
@@ -266,7 +272,7 @@ body {
 }
 
 .login-header p {
-    color: var(--light-gray);
+    color: var(--text-secondary);
     font-size: 14px;
 }
 
@@ -283,7 +289,7 @@ body {
     margin-bottom: 8px;
     font-size: 14px;
     font-weight: 500;
-    color: var(--white);
+    color: var(--text-primary);
 }
 
 .form-group input,
@@ -291,10 +297,10 @@ body {
 .form-group textarea {
     width: 100%;
     padding: 12px 16px;
-    background-color: var(--dark-gray);
+    background-color: var(--white);
     border: 1px solid var(--medium-gray);
     border-radius: 4px;
-    color: var(--white);
+    color: var(--text-primary);
     font-size: 14px;
     font-family: inherit;
     transition: border-color 0.2s;
@@ -498,7 +504,7 @@ body {
 
 .case-info-item {
     font-size: 14px;
-    color: var(--light-gray);
+    color: var(--text-secondary);
     margin-bottom: 4px;
 }
 
@@ -549,16 +555,16 @@ body {
 
 .filter-group label {
     font-size: 12px;
-    color: var(--light-gray);
+    color: var(--text-secondary);
 }
 
 .filter-group input,
 .filter-group select {
     padding: 8px 12px;
-    background-color: var(--dark-gray);
+    background-color: var(--white);
     border: 1px solid var(--medium-gray);
     border-radius: 4px;
-    color: var(--white);
+    color: var(--text-primary);
     font-size: 14px;
     min-width: 150px;
 }
@@ -574,7 +580,7 @@ body {
 
 .chat-sidebar {
     width: 300px;
-    background-color: var(--charcoal);
+    background-color: var(--white);
     border-right: 1px solid var(--dark-gray);
     display: flex;
     flex-direction: column;
@@ -588,10 +594,10 @@ body {
 .chat-search input {
     width: 100%;
     padding: 8px 12px;
-    background-color: var(--dark-gray);
+    background-color: var(--white);
     border: 1px solid var(--medium-gray);
     border-radius: 4px;
-    color: var(--white);
+    color: var(--text-primary);
     font-size: 14px;
 }
 
@@ -623,14 +629,14 @@ body {
 
 .chat-contact-preview {
     font-size: 12px;
-    color: var(--light-gray);
+    color: var(--text-secondary);
 }
 
 .chat-main {
     flex: 1;
     display: flex;
     flex-direction: column;
-    background-color: var(--black);
+    background-color: var(--white);
 }
 
 .chat-header {
@@ -652,7 +658,7 @@ body {
     max-width: 70%;
     padding: 12px 16px;
     border-radius: 8px;
-    background-color: var(--dark-gray);
+    background-color: var(--charcoal);
 }
 
 .chat-message.sent {
@@ -669,7 +675,7 @@ body {
     font-size: 12px;
     font-weight: 500;
     margin-bottom: 4px;
-    color: var(--light-gray);
+    color: var(--text-secondary);
 }
 
 .chat-message.sent .chat-message-header {
@@ -678,7 +684,7 @@ body {
 
 .chat-message-time {
     font-size: 10px;
-    color: var(--light-gray);
+    color: var(--text-secondary);
     margin-top: 4px;
 }
 
@@ -692,10 +698,10 @@ body {
 .chat-input-container input {
     flex: 1;
     padding: 12px 16px;
-    background-color: var(--dark-gray);
+    background-color: var(--white);
     border: 1px solid var(--medium-gray);
     border-radius: 24px;
-    color: var(--white);
+    color: var(--text-primary);
     font-size: 14px;
 }
 
@@ -873,7 +879,7 @@ body {
 
 .timeline-time {
     font-size: 12px;
-    color: var(--light-gray);
+    color: var(--text-secondary);
     margin-bottom: 4px;
 }
 
@@ -938,11 +944,12 @@ body {
 }
 
 .info-card {
-    background-color: var(--charcoal);
+    background-color: var(--white);
     border: 1px solid var(--dark-gray);
     border-radius: 8px;
     padding: 24px;
     margin-bottom: 24px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .info-card h3 {
@@ -958,7 +965,7 @@ body {
 }
 
 .info-item strong {
-    color: var(--light-gray);
+    color: var(--text-secondary);
     margin-right: 8px;
 }
 
@@ -980,7 +987,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--charcoal);
+    background: var(--white);
 }
 
 ::-webkit-scrollbar-thumb {
