@@ -172,6 +172,12 @@ const dataManager = {
         ).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
     },
 
+    getMessagesByCase(caseId) {
+        const messages = this.getMessages();
+        return messages.filter(m => m.caseId === caseId)
+            .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    },
+
     createMessage(messageData) {
         const messages = this.getMessages();
         const newMessage = {

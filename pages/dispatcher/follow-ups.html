@@ -55,44 +55,65 @@
                         </div>
                     </div>
                 </header>
-                <div class="content-area">
-                    <div class="filters-bar">
-                        <div class="filter-group">
-                            <label>Status</label>
-                            <select id="filter-followup-status">
-                                <option value="">All</option>
-                                <option value="scheduled">Scheduled</option>
-                                <option value="due">Due Now</option>
-                                <option value="overdue">Overdue</option>
-                                <option value="completed">Completed</option>
-                            </select>
+                <div class="content-area followups-layout">
+                    <div class="followups-left">
+                        <div class="filters-bar">
+                            <div class="filter-group">
+                                <label>Status</label>
+                                <select id="filter-followup-status">
+                                    <option value="">All</option>
+                                    <option value="scheduled">Scheduled</option>
+                                    <option value="due">Due Now</option>
+                                    <option value="overdue">Overdue</option>
+                                    <option value="completed">Completed</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>Time Range</label>
+                                <select id="filter-time-range">
+                                    <option value="today">Today</option>
+                                    <option value="tomorrow">Tomorrow</option>
+                                    <option value="week">This Week</option>
+                                    <option value="all">All</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="filter-group">
-                            <label>Time Range</label>
-                            <select id="filter-time-range">
-                                <option value="today">Today</option>
-                                <option value="tomorrow">Tomorrow</option>
-                                <option value="week">This Week</option>
-                                <option value="all">All</option>
-                            </select>
+                        
+                        <div class="section">
+                            <div class="section-header">
+                                <h2>Due Follow-ups</h2>
+                            </div>
+                            <div id="due-followups-list" class="cases-list">
+                                <!-- Due follow-ups will be loaded here -->
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="section">
-                        <div class="section-header">
-                            <h2>Due Follow-ups</h2>
-                        </div>
-                        <div id="due-followups-list" class="cases-list">
-                            <!-- Due follow-ups will be loaded here -->
+
+                        <div class="section">
+                            <div class="section-header">
+                                <h2>Scheduled Follow-ups</h2>
+                            </div>
+                            <div id="scheduled-followups-list" class="cases-list">
+                                <!-- Scheduled follow-ups will be loaded here -->
+                            </div>
                         </div>
                     </div>
 
-                    <div class="section">
-                        <div class="section-header">
-                            <h2>Scheduled Follow-ups</h2>
-                        </div>
-                        <div id="scheduled-followups-list" class="cases-list">
-                            <!-- Scheduled follow-ups will be loaded here -->
+                    <div class="followups-right">
+                        <div class="followup-chat-panel" id="followup-chat-panel">
+                            <div class="followup-chat-header">
+                                <h3>Chat with Person in Crisis</h3>
+                                <p class="followup-chat-subtitle">Select a follow-up to start chatting</p>
+                            </div>
+                            <div class="followup-chat-messages" id="followup-chat-messages">
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">💬</div>
+                                    <p>Select a follow-up case to chat with the person</p>
+                                </div>
+                            </div>
+                            <div class="followup-chat-input-container" id="followup-chat-input-container" style="display: none;">
+                                <input type="text" id="followup-chat-input" placeholder="Type your message...">
+                                <button class="btn btn-primary" id="followup-send-btn">Send</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -136,6 +157,7 @@
     <script src="../../js/dummy-data.js"></script>
     <script src="../../js/auth.js"></script>
     <script src="../../js/cases.js"></script>
+    <script src="../../js/chat.js"></script>
     <script src="../../js/navigation.js"></script>
     <script src="../../js/app.js"></script>
     <script src="../../js/pages/follow-ups.js"></script>
