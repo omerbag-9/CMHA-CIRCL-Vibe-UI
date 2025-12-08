@@ -3,34 +3,41 @@
 const navigation = {
     // Set active nav item based on current page
     setActiveNav() {
-        const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
-        const navItems = document.querySelectorAll('.nav-item');
+        // Get current page from URL
+        const path = window.location.pathname;
+        const currentPage = path.split('/').pop() || 'dashboard.html';
         
-        navItems.forEach(item => {
+        // Remove all active classes first
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        // Find and activate the matching nav item
+        document.querySelectorAll('.nav-item').forEach(item => {
             const href = item.getAttribute('href');
-            if (href && href.includes(currentPage)) {
-                item.classList.add('active');
-            } else {
-                item.classList.remove('active');
+            if (href) {
+                const hrefPage = href.split('/').pop();
+                // Match the page name
+                if (hrefPage === currentPage) {
+                    item.classList.add('active');
+                }
+                // Also handle index/dashboard cases
+                if ((currentPage === '' || currentPage === 'index.html') && hrefPage === 'dashboard.html') {
+                    item.classList.add('active');
+                }
             }
         });
     },
 
     // Initialize navigation
     init() {
+        // Set active state based on current URL
         this.setActiveNav();
         
-        // Handle navigation clicks
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                // Remove active from all items
-                document.querySelectorAll('.nav-item').forEach(nav => {
-                    nav.classList.remove('active');
-                });
-                // Add active to clicked item
-                item.classList.add('active');
-            });
-        });
+        // Update active state after a short delay to ensure DOM is ready
+        setTimeout(() => {
+            this.setActiveNav();
+        }, 100);
     }
 };
 
@@ -40,4 +47,9 @@ if (document.readyState === 'loading') {
 } else {
     navigation.init();
 }
+
+// Also run on page load
+window.addEventListener('load', () => {
+    navigation.setActiveNav();
+});
 

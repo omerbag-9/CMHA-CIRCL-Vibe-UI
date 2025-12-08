@@ -68,14 +68,17 @@ const app = {
             });
         }
 
-        // Navigation items
+        // Navigation items - allow normal href navigation
+        // Only prevent default if it's a data-page attribute (SPA mode)
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', (e) => {
-                e.preventDefault();
                 const page = item.getAttribute('data-page');
-                if (page) {
+                // Only prevent default if it's SPA mode (has data-page but no href)
+                if (page && !item.getAttribute('href')) {
+                    e.preventDefault();
                     this.showPage(page);
                 }
+                // Otherwise, let the href work normally
             });
         });
     },
