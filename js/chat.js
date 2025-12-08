@@ -56,16 +56,42 @@ const chat = {
 
         // Get user details for each conversation
         this.conversations = Array.from(userIds).map(userId => {
-            const user = dataManager.getUserById(userId);
+            let userName = 'Unknown';
+            let caseInfo = '';
+            
+            // Check if it's a public user (person in crisis)
+            if (userId.startsWith('public_')) {
+                // Get case info for public users
+                const messages = dataManager.getMessagesByConversation(currentUser.id, userId);
+                const caseMessage = messages.find(m => m.caseId);
+                if (caseMessage) {
+                    const caseData = dataManager.getCaseById(caseMessage.caseId);
+                    if (caseData) {
+                        userName = caseData.callerName || 'Person in Crisis';
+                        caseInfo = ` • ${caseData.caseId}`;
+                    } else {
+                        userName = 'Person in Crisis';
+                    }
+                } else {
+                    userName = 'Person in Crisis';
+                }
+            } else {
+                const user = dataManager.getUserById(userId);
+                if (user) {
+                    userName = user.name;
+                }
+            }
+            
             const messages = dataManager.getMessagesByConversation(currentUser.id, userId);
             const lastMessage = messages[messages.length - 1];
             
             return {
                 userId,
-                userName: user ? user.name : 'Unknown',
+                userName: userName + caseInfo,
                 lastMessage: lastMessage ? lastMessage.text : '',
                 lastMessageTime: lastMessage ? lastMessage.timestamp : '',
-                unread: messages.filter(m => !m.read && m.toId === currentUser.id).length
+                unread: messages.filter(m => !m.read && m.toId === currentUser.id).length,
+                isPublic: userId.startsWith('public_')
             };
         }).sort((a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime));
 
@@ -101,12 +127,35 @@ const chat = {
         this.currentConversation = userId;
         const currentUser = auth.getCurrentUser();
         const messages = dataManager.getMessagesByConversation(currentUser.id, userId);
-        const user = dataManager.getUserById(userId);
+        
+        let userName = 'Unknown';
+        let caseInfo = '';
+        
+        // Check if it's a public user (person in crisis)
+        if (userId.startsWith('public_')) {
+            const caseMessage = messages.find(m => m.caseId);
+            if (caseMessage) {
+                const caseData = dataManager.getCaseById(caseMessage.caseId);
+                if (caseData) {
+                    userName = caseData.callerName || 'Person in Crisis';
+                    caseInfo = ` • ${caseData.caseId}`;
+                } else {
+                    userName = 'Person in Crisis';
+                }
+            } else {
+                userName = 'Person in Crisis';
+            }
+        } else {
+            const user = dataManager.getUserById(userId);
+            if (user) {
+                userName = user.name;
+            }
+        }
 
         // Update header
         const header = document.getElementById('chat-header');
         if (header) {
-            header.innerHTML = `<span>${user ? user.name : 'Unknown'}</span>`;
+            header.innerHTML = `<span>${userName}${caseInfo}</span>`;
         }
 
         // Enable input

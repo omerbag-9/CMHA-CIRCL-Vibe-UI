@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cases - CRCL</title>
+    <title>Follow-ups - CRCL</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -45,7 +45,7 @@
                 <header class="top-bar">
                     <div class="top-bar-left">
                         <button class="menu-toggle">☰</button>
-                        <h1>Cases</h1>
+                        <h1>Follow-ups</h1>
                     </div>
                     <div class="top-bar-right">
                         <button class="icon-btn" id="notifications-btn">🔔</button>
@@ -59,33 +59,75 @@
                     <div class="filters-bar">
                         <div class="filter-group">
                             <label>Status</label>
-                            <select id="filter-status">
+                            <select id="filter-followup-status">
                                 <option value="">All</option>
-                                <option value="new">New</option>
-                                <option value="active">Active</option>
-                                <option value="pending">Pending</option>
-                                <option value="closed">Closed</option>
+                                <option value="scheduled">Scheduled</option>
+                                <option value="due">Due Now</option>
+                                <option value="overdue">Overdue</option>
+                                <option value="completed">Completed</option>
                             </select>
                         </div>
                         <div class="filter-group">
-                            <label>Urgency</label>
-                            <select id="filter-urgency">
-                                <option value="">All</option>
-                                <option value="normal">Normal</option>
-                                <option value="urgent">Urgent</option>
-                                <option value="emergency">Emergency</option>
+                            <label>Time Range</label>
+                            <select id="filter-time-range">
+                                <option value="today">Today</option>
+                                <option value="tomorrow">Tomorrow</option>
+                                <option value="week">This Week</option>
+                                <option value="all">All</option>
                             </select>
                         </div>
-                        <div class="filter-group">
-                            <input type="text" id="search-cases" placeholder="Search cases...">
-                        </div>
-                        <a href="new-case.html" class="btn btn-primary">+ New Case</a>
                     </div>
-                    <div id="cases-list" class="cases-list">
-                        <!-- Cases will be loaded here -->
+                    
+                    <div class="section">
+                        <div class="section-header">
+                            <h2>Due Follow-ups</h2>
+                        </div>
+                        <div id="due-followups-list" class="cases-list">
+                            <!-- Due follow-ups will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-header">
+                            <h2>Scheduled Follow-ups</h2>
+                        </div>
+                        <div id="scheduled-followups-list" class="cases-list">
+                            <!-- Scheduled follow-ups will be loaded here -->
+                        </div>
                     </div>
                 </div>
             </main>
+        </div>
+    </div>
+
+    <!-- Follow-up Modal -->
+    <div id="modal-overlay" class="modal-overlay" style="display: none;">
+        <div class="modal" id="followup-modal">
+            <div class="modal-header">
+                <h2>Complete Follow-up</h2>
+                <button class="modal-close" onclick="app.closeModal()">×</button>
+            </div>
+            <div class="modal-content">
+                <div id="followup-case-info"></div>
+                <div class="form-group">
+                    <label for="followup-notes">Follow-up Notes *</label>
+                    <textarea id="followup-notes" rows="5" required placeholder="Describe the follow-up conversation and current status..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="followup-outcome">Outcome *</label>
+                    <select id="followup-outcome" required>
+                        <option value="">Select outcome</option>
+                        <option value="resolved">Resolved - No further support needed</option>
+                        <option value="improving">Improving - Continue monitoring</option>
+                        <option value="needs-support">Needs Additional Support</option>
+                        <option value="escalate">Needs Escalation</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="app.closeModal()">Cancel</button>
+                <button class="btn btn-primary" id="complete-followup-btn">Complete Follow-up</button>
+            </div>
         </div>
     </div>
 
@@ -96,7 +138,7 @@
     <script src="../../js/cases.js"></script>
     <script src="../../js/navigation.js"></script>
     <script src="../../js/app.js"></script>
-    <script src="../../js/pages/dispatcher-cases.js"></script>
+    <script src="../../js/pages/follow-ups.js"></script>
 </body>
 </html>
 

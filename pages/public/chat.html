@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with CRCL - Crisis Support</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/utilities.css">
+</head>
+<body>
+    <div id="app">
+        <div class="public-chat-container">
+            <div class="public-chat-header">
+                <div class="public-chat-header-content">
+                    <h1>CRCL</h1>
+                    <p>Crisis Response & Support</p>
+                </div>
+                <div class="public-chat-info">
+                    <div id="case-info" class="case-info-badge">
+                        <span id="case-id-text">Case: Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="public-chat-main">
+                <div class="public-chat-messages" id="public-chat-messages">
+                    <div class="empty-state">
+                        <p>Connecting you with a dispatcher...</p>
+                    </div>
+                </div>
+                <div class="public-chat-input-container">
+                    <input type="text" id="public-chat-input" placeholder="Type your message here...">
+                    <button class="btn btn-primary" id="public-send-btn">Send</button>
+                </div>
+            </div>
+            <div class="public-chat-footer">
+                <p>If this is an emergency, please call 911 immediately</p>
+                <p>CRCL Support: 1-800-CRCL-HELP</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/data.js"></script>
+    <script src="../../js/public-chat.js"></script>
+</body>
+</html>
+

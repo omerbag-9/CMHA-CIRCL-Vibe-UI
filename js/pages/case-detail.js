@@ -161,7 +161,7 @@ function addCaseNote(caseId) {
 
 function scheduleFollowup(caseId) {
     const hours = prompt('Schedule follow-up in how many hours? (24 or 48)', '24');
-    if (!hours) return;
+    if (!hours || isNaN(hours)) return;
 
     const followupTime = new Date();
     followupTime.setHours(followupTime.getHours() + parseInt(hours));
@@ -172,7 +172,7 @@ function scheduleFollowup(caseId) {
         status: 'followup_scheduled'
     });
 
-    utils.showNotification('Follow-up scheduled', 'success');
+    utils.showNotification(`Follow-up scheduled for ${utils.formatDate(followupTime)}`, 'success');
     setTimeout(() => window.location.reload(), 1000);
 }
 
