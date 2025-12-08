@@ -16,11 +16,17 @@ function setupForm() {
     const dynamicQuestions = document.getElementById('dynamic-questions');
     const saveDraftBtn = document.getElementById('save-draft-btn');
 
-    // Crisis type change handler
-    if (crisisTypeSelect) {
-        crisisTypeSelect.addEventListener('change', (e) => {
-            loadDynamicQuestions(e.target.value);
-        });
+    // Load dummy data button (for testing)
+    const loadDummyBtn = document.createElement('button');
+    loadDummyBtn.type = 'button';
+    loadDummyBtn.className = 'btn btn-secondary';
+    loadDummyBtn.textContent = '📋 Load Sample Data';
+    loadDummyBtn.style.marginBottom = '16px';
+    loadDummyBtn.onclick = loadDummyData;
+    
+    const firstSection = document.querySelector('.form-section');
+    if (firstSection) {
+        firstSection.insertBefore(loadDummyBtn, firstSection.firstChild);
     }
 
     // Form submission
@@ -46,68 +52,44 @@ function setupForm() {
     }, 30000);
 }
 
-function loadDynamicQuestions(crisisType) {
-    const container = document.getElementById('dynamic-questions');
-    if (!container) return;
-
-    const questions = {
-        emergency: [
-            { id: 'immediate-danger', text: 'Is there immediate danger?', type: 'radio', options: ['Yes', 'No'] },
-            { id: 'weapons', text: 'Are there any weapons involved?', type: 'radio', options: ['Yes', 'No', 'Unknown'] }
-        ],
-        urgent: [
-            { id: 'repeat-caller', text: 'Has this person called before?', type: 'radio', options: ['Yes', 'No', 'Unknown'] },
-            { id: 'support-system', text: 'Do they have a support system?', type: 'radio', options: ['Yes', 'No', 'Unknown'] }
-        ],
-        routine: [
-            { id: 'nature', text: 'What is the nature of the crisis?', type: 'textarea' }
-        ],
-        sensitive: [
-            { id: 'confidential', text: 'This is a sensitive case requiring extra confidentiality', type: 'checkbox' }
-        ]
-    };
-
-    const questionSet = questions[crisisType] || [];
-    
-    if (questionSet.length === 0) {
-        container.innerHTML = '';
-        return;
+// Load dummy data function
+function loadDummyData() {
+    // Only load if form is empty
+    const callerName = document.getElementById('caller-name');
+    if (callerName && !callerName.value) {
+        // Dummy caller information
+        document.getElementById('caller-name').value = 'Sarah Johnson';
+        document.getElementById('caller-phone').value = '604-555-0123';
+        document.getElementById('caller-location').value = '123 Main Street, Vancouver, BC V6B 1A1';
+        
+        // Set some default assessment answers
+        document.getElementById('danger-no').checked = true;
+        document.querySelector('input[name="suicidal-thoughts"][value="no"]').checked = true;
+        document.querySelector('input[name="homicidal-thoughts"][value="no"]').checked = true;
+        document.querySelector('input[name="weapons-involved"][value="no"]').checked = true;
+        document.querySelector('input[name="current-state"][value="anxious"]').checked = true;
+        document.querySelector('input[name="substance-none"]').checked = true;
+        document.getElementById('medications').value = 'Sertraline 50mg daily';
+        document.getElementById('diagnosis').value = 'Generalized Anxiety Disorder';
+        document.querySelector('input[name="has-support"][value="yes"]').checked = true;
+        document.querySelector('input[name="support-family"]').checked = true;
+        document.querySelector('input[name="support-friends"]').checked = true;
+        document.getElementById('emergency-contact').value = 'John Johnson (Spouse): 604-555-0124';
+        document.querySelector('input[name="previous-attempts"][value="no"]').checked = true;
+        document.querySelector('input[name="risk-none"]').checked = true;
+        document.querySelector('input[name="repeat-caller"][value="no"]').checked = true;
+        document.querySelector('input[name="hospital-history"][value="no"]').checked = true;
+        document.querySelector('input[name="living-situation"][value="own-home"]').checked = true;
+        document.getElementById('trigger-event').value = 'Recent job loss and financial stress. Feeling overwhelmed and unable to cope.';
+        document.querySelector('input[name="need-counseling"]').checked = true;
+        document.querySelector('input[name="need-resources"]').checked = true;
+        document.getElementById('caller-relationship').value = 'self';
+        document.getElementById('special-notes').value = 'Person is cooperative and willing to accept help. Prefers phone communication.';
+        document.getElementById('initial-notes').value = 'Initial assessment completed. Person is experiencing significant stress but is not in immediate danger. Willing to work with crisis responder for support and resource connection.';
     }
-
-    container.innerHTML = questionSet.map(q => {
-        if (q.type === 'radio') {
-            return `
-                <div class="form-group">
-                    <label>${q.text}</label>
-                    <div class="radio-group">
-                        ${q.options.map(opt => `
-                            <label class="radio-label">
-                                <input type="radio" name="${q.id}" value="${opt.toLowerCase()}">
-                                <span>${opt}</span>
-                            </label>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        } else if (q.type === 'textarea') {
-            return `
-                <div class="form-group">
-                    <label>${q.text}</label>
-                    <textarea name="${q.id}" rows="3"></textarea>
-                </div>
-            `;
-        } else if (q.type === 'checkbox') {
-            return `
-                <div class="form-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" name="${q.id}">
-                        <span>${q.text}</span>
-                    </label>
-                </div>
-            `;
-        }
-    }).join('');
 }
+
+// Remove the old loadDynamicQuestions function as we now have static categories
 
 function createCase() {
     const form = document.getElementById('new-case-form');
@@ -135,16 +117,36 @@ function createCase() {
         status: immediateDanger ? 'emergency' : 'new'
     };
 
-    // Add dynamic question answers
-    const dynamicAnswers = {};
-    form.querySelectorAll('#dynamic-questions input, #dynamic-questions textarea').forEach(input => {
-        if (input.type === 'checkbox') {
-            dynamicAnswers[input.name] = input.checked;
-        } else if (input.value) {
-            dynamicAnswers[input.name] = input.value;
-        }
-    });
-    caseData.dynamicAnswers = dynamicAnswers;
+    // Collect all assessment answers
+    const assessmentData = {};
+    
+    // Get all form inputs from assessment section
+    const assessmentSection = document.getElementById('assessment-questions');
+    if (assessmentSection) {
+        // Get radio button values
+        assessmentSection.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+            assessmentData[radio.name] = radio.value;
+        });
+        
+        // Get checkbox values (as array)
+        const checkboxGroups = {};
+        assessmentSection.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+            if (!checkboxGroups[checkbox.name]) {
+                checkboxGroups[checkbox.name] = [];
+            }
+            checkboxGroups[checkbox.name].push(checkbox.value);
+        });
+        Object.assign(assessmentData, checkboxGroups);
+        
+        // Get text inputs and textareas
+        assessmentSection.querySelectorAll('input[type="text"], textarea, select').forEach(input => {
+            if (input.value) {
+                assessmentData[input.name] = input.value;
+            }
+        });
+    }
+    
+    caseData.assessmentData = assessmentData;
 
     const newCase = dataManager.createCase(caseData);
     
@@ -197,7 +199,6 @@ window.addEventListener('load', () => {
             }
             if (draftData.crisisType) {
                 document.getElementById('crisis-type').value = draftData.crisisType;
-                loadDynamicQuestions(draftData.crisisType);
             }
             if (draftData.initialNotes) document.getElementById('initial-notes').value = draftData.initialNotes;
         } catch (e) {

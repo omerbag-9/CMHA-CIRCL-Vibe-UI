@@ -102,12 +102,395 @@
                                 <option value="sensitive">Sensitive</option>
                             </select>
                         </div>
-                        <div class="form-section" id="dynamic-questions">
-                            <!-- Dynamic questions will appear here -->
+                        <div class="form-section" id="assessment-questions">
+                            <h3>Assessment Questions</h3>
+                            <p class="section-description">Please complete all relevant assessment categories below</p>
+                            
+                            <!-- Safety Assessment -->
+                            <div class="question-category">
+                                <h4 class="category-title">🛡️ Safety Assessment</h4>
+                                <div class="form-group">
+                                    <label for="immediate-danger">Is there immediate danger to self or others? *</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="immediate-danger" id="danger-yes" value="yes" required>
+                                            <span>Yes</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="immediate-danger" id="danger-no" value="no" checked>
+                                            <span>No</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="immediate-danger" id="danger-unknown" value="unknown">
+                                            <span>Unknown</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="suicidal-thoughts">Suicidal thoughts or ideation?</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="suicidal-thoughts" value="yes">
+                                            <span>Yes</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="suicidal-thoughts" value="no" checked>
+                                            <span>No</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="suicidal-thoughts" value="unknown">
+                                            <span>Unknown</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="homicidal-thoughts">Homicidal thoughts or threats?</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="homicidal-thoughts" value="yes">
+                                            <span>Yes</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="homicidal-thoughts" value="no" checked>
+                                            <span>No</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="homicidal-thoughts" value="unknown">
+                                            <span>Unknown</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="weapons-involved">Are there weapons involved?</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="weapons-involved" value="yes">
+                                            <span>Yes</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="weapons-involved" value="no" checked>
+                                            <span>No</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="weapons-involved" value="unknown">
+                                            <span>Unknown</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Mental Health Status -->
+                            <div class="question-category">
+                                <h4 class="category-title">🧠 Mental Health Status</h4>
+                                <div class="form-group">
+                                    <label for="current-state">Current mental state?</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="current-state" value="stable" checked>
+                                            <span>Stable</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="current-state" value="anxious">
+                                            <span>Anxious</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="current-state" value="agitated">
+                                            <span>Agitated</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="current-state" value="depressed">
+                                            <span>Depressed</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="current-state" value="psychotic">
+                                            <span>Psychotic</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="substance-use">Current substance use?</label>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="substance-alcohol" value="alcohol">
+                                            <span>Alcohol</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="substance-drugs" value="drugs">
+                                            <span>Illicit Drugs</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="substance-prescription" value="prescription">
+                                            <span>Prescription Medication</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="substance-none" value="none" checked>
+                                            <span>None</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="medications">Current medications?</label>
+                                    <input type="text" name="medications" id="medications" placeholder="e.g., Sertraline 50mg daily, Ativan PRN">
+                                </div>
+                                <div class="form-group">
+                                    <label for="diagnosis">Known mental health diagnosis?</label>
+                                    <input type="text" name="diagnosis" id="diagnosis" placeholder="e.g., Major Depressive Disorder, PTSD">
+                                </div>
+                            </div>
+
+                            <!-- Support Systems -->
+                            <div class="question-category">
+                                <h4 class="category-title">👥 Support Systems</h4>
+                                <div class="form-group">
+                                    <label for="has-support">Does the person have a support system?</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="has-support" value="yes" checked>
+                                            <span>Yes</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="has-support" value="no">
+                                            <span>No</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="has-support" value="unknown">
+                                            <span>Unknown</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="support-people">Who is in their support network?</label>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="support-family" value="family">
+                                            <span>Family Members</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="support-friends" value="friends">
+                                            <span>Friends</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="support-counselor" value="counselor">
+                                            <span>Counselor/Therapist</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="support-doctor" value="doctor">
+                                            <span>Family Doctor</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="support-caseworker" value="caseworker">
+                                            <span>Case Worker</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="support-none" value="none">
+                                            <span>None</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="emergency-contact">Emergency contact name and phone</label>
+                                    <input type="text" name="emergency-contact" id="emergency-contact" placeholder="Name: Phone Number">
+                                </div>
+                            </div>
+
+                            <!-- Risk Factors -->
+                            <div class="question-category">
+                                <h4 class="category-title">⚠️ Risk Factors</h4>
+                                <div class="form-group">
+                                    <label for="previous-attempts">Previous suicide attempts?</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="previous-attempts" value="yes">
+                                            <span>Yes</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="previous-attempts" value="no" checked>
+                                            <span>No</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="previous-attempts" value="unknown">
+                                            <span>Unknown</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="risk-factors">Select all applicable risk factors:</label>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="risk-isolation" value="isolation">
+                                            <span>Social Isolation</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="risk-homelessness" value="homelessness">
+                                            <span>Homelessness/Housing Instability</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="risk-unemployment" value="unemployment">
+                                            <span>Unemployment</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="risk-domestic-violence" value="domestic-violence">
+                                            <span>Domestic Violence</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="risk-financial" value="financial">
+                                            <span>Financial Crisis</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="risk-legal" value="legal">
+                                            <span>Legal Issues</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="risk-grief" value="grief">
+                                            <span>Recent Loss/Grief</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="risk-none" value="none" checked>
+                                            <span>None Identified</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Previous History -->
+                            <div class="question-category">
+                                <h4 class="category-title">📋 Previous History</h4>
+                                <div class="form-group">
+                                    <label for="repeat-caller">Has this person contacted CRCL before?</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="repeat-caller" value="yes">
+                                            <span>Yes</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="repeat-caller" value="no" checked>
+                                            <span>No</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="repeat-caller" value="unknown">
+                                            <span>Unknown</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="previous-case-id">Previous case ID (if known)</label>
+                                    <input type="text" name="previous-case-id" id="previous-case-id" placeholder="e.g., CR-2024-001234">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hospital-history">Previous psychiatric hospitalizations?</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="hospital-history" value="yes">
+                                            <span>Yes</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="hospital-history" value="no" checked>
+                                            <span>No</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="hospital-history" value="unknown">
+                                            <span>Unknown</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Current Situation -->
+                            <div class="question-category">
+                                <h4 class="category-title">📍 Current Situation</h4>
+                                <div class="form-group">
+                                    <label for="living-situation">Current living situation?</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="living-situation" value="own-home" checked>
+                                            <span>Own Home</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="living-situation" value="rental">
+                                            <span>Rental</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="living-situation" value="shelter">
+                                            <span>Shelter</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="living-situation" value="homeless">
+                                            <span>Homeless</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="living-situation" value="other">
+                                            <span>Other</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="trigger-event">What triggered this crisis? (if known)</label>
+                                    <textarea name="trigger-event" id="trigger-event" rows="3" placeholder="Describe the event or situation that led to this crisis call..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="immediate-needs">Immediate needs identified:</label>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="need-safety" value="safety">
+                                            <span>Safety Planning</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="need-housing" value="housing">
+                                            <span>Housing Support</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="need-food" value="food">
+                                            <span>Food Security</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="need-transport" value="transport">
+                                            <span>Transportation</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="need-medical" value="medical">
+                                            <span>Medical Attention</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="need-counseling" value="counseling">
+                                            <span>Counseling Services</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="need-resources" value="resources">
+                                            <span>Resource Information</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Additional Information -->
+                            <div class="question-category">
+                                <h4 class="category-title">📝 Additional Information</h4>
+                                <div class="form-group">
+                                    <label for="caller-relationship">Relationship to person in crisis (if caller is not the person)</label>
+                                    <select name="caller-relationship" id="caller-relationship">
+                                        <option value="">Select relationship</option>
+                                        <option value="self">Self (Person in Crisis)</option>
+                                        <option value="family-member">Family Member</option>
+                                        <option value="friend">Friend</option>
+                                        <option value="neighbor">Neighbor</option>
+                                        <option value="healthcare-worker">Healthcare Worker</option>
+                                        <option value="police">Police Officer</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cultural-considerations">Cultural or language considerations?</label>
+                                    <input type="text" name="cultural-considerations" id="cultural-considerations" placeholder="e.g., Requires interpreter, Cultural sensitivity needed">
+                                </div>
+                                <div class="form-group">
+                                    <label for="special-notes">Special notes or additional context</label>
+                                    <textarea name="special-notes" id="special-notes" rows="4" placeholder="Any additional information that would be helpful for responders..."></textarea>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-section">
-                            <h3>Initial Notes</h3>
-                            <textarea id="initial-notes" name="initialNotes" rows="5" placeholder="Type notes here..."></textarea>
+                            <h3>Dispatcher Notes</h3>
+                            <textarea id="initial-notes" name="initialNotes" rows="5" placeholder="Add any additional notes, observations, or important information here..."></textarea>
                         </div>
                         <div class="form-actions">
                             <a href="cases.html" class="btn btn-secondary">Cancel</a>
