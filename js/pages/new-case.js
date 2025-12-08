@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     setupForm();
+    loadFromRequest();
 });
 
 function setupForm() {
@@ -50,6 +51,68 @@ function setupForm() {
             saveDraft(true); // Silent save
         }
     }, 30000);
+}
+
+// Load data from public request URL parameters
+function loadFromRequest() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromRequest = urlParams.get('fromRequest');
+    
+    if (!fromRequest) return;
+    
+    // Get the request data
+    const name = urlParams.get('name');
+    const phone = urlParams.get('phone');
+    const location = urlParams.get('location');
+    const message = urlParams.get('message');
+    const isForSelf = urlParams.get('isForSelf') === 'true';
+    const personInCrisisName = urlParams.get('personInCrisisName');
+    
+    // Pre-fill the form
+    const callerNameInput = document.getElementById('caller-name');
+    const callerPhoneInput = document.getElementById('caller-phone');
+    const callerLocationInput = document.getElementById('caller-location');
+    const initialNotesInput = document.getElementById('initial-notes');
+    const callerRelationshipSelect = document.getElementById('caller-relationship');
+    const contactMethodWeb = document.querySelector('input[name="contactMethod"][value="web"]');
+    
+    if (name && callerNameInput) {
+        callerNameInput.value = decodeURIComponent(name);
+    }
+    
+    if (phone && callerPhoneInput) {
+        callerPhoneInput.value = decodeURIComponent(phone);
+    }
+    
+    if (location && callerLocationInput) {
+        callerLocationInput.value = decodeURIComponent(location);
+    }
+    
+    if (message && initialNotesInput) {
+        initialNotesInput.value = decodeURIComponent(message);
+    }
+    
+    // Set relationship if it's for someone else
+    if (!isForSelf && personInCrisisName && callerRelationshipSelect) {
+        // Try to set a default relationship, or leave it for dispatcher to fill
+        // The dispatcher will need to specify the exact relationship
+    }
+    
+    // Set contact method to web
+    if (contactMethodWeb) {
+        contactMethodWeb.checked = true;
+    }
+    
+    // Show notification
+    if (name || phone || location || message) {
+        const relationshipText = isForSelf ? 'for themselves' : `for ${personInCrisisName || 'someone else'}`;
+        utils.showNotification(`Form pre-filled from web request ${relationshipText}`, 'success');
+    }
+    
+    // Store request ID to mark it as processed when case is created
+    if (fromRequest) {
+        localStorage.setItem('pending_request_id', fromRequest);
+    }
 }
 
 // Load dummy data function
@@ -149,6 +212,28 @@ function createCase() {
     caseData.assessmentData = assessmentData;
 
     const newCase = dataManager.createCase(caseData);
+    
+    // If this case was created from a public request, mark the request as processed
+    const pendingRequestId = localStorage.getItem('pending_request_id');
+    if (pendingRequestId) {
+        const request = dataManager.getCaseById(pendingRequestId);
+        if (request && request.isPublicCase) {
+            // Update the request to link it to the new case
+            dataManager.updateCase(pendingRequestId, {
+                status: 'assigned_to_responder',
+                linkedCaseId: newCase.id,
+                timeline: [
+                    ...(request.timeline || []),
+                    {
+                        action: `Case created from web request - ${newCase.caseId}`,
+                        timestamp: new Date().toISOString(),
+                        user: currentUser.name
+                    }
+                ]
+            });
+            localStorage.removeItem('pending_request_id');
+        }
+    }
     
     utils.showNotification(`Case ${newCase.caseId} created successfully`, 'success');
     

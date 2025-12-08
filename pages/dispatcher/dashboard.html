@@ -27,6 +27,10 @@
                         <span class="nav-icon">📋</span>
                         <span class="nav-text">All Cases</span>
                     </a>
+                    <a href="public-requests.html" class="nav-item">
+                        <span class="nav-icon">🌐</span>
+                        <span class="nav-text">Public Requests</span>
+                    </a>
                     <a href="responders.html" class="nav-item">
                         <span class="nav-icon">👥</span>
                         <span class="nav-text">Responders</span>
@@ -75,16 +79,146 @@
                     </div>
                     <div class="section">
                         <div class="section-header">
-                            <h2>Active Cases</h2>
-                            <a href="new-case.html" class="btn btn-primary">+ New Case</a>
-                        </div>
-                        <div class="filters-bar" style="margin-bottom: 20px;">
-                            <div class="filter-group" style="flex: 1;">
-                                <input type="text" id="search-dashboard-cases" placeholder="Search person in crisis by name...">
+                            <h2>All Cases</h2>
+                            <div style="display: flex; gap: 12px;">
+                                <a href="new-case.html" class="btn btn-primary">+ New Case</a>
                             </div>
                         </div>
-                        <div id="active-cases-list" class="cases-list">
-                            <!-- Cases will be loaded here -->
+                        <div class="filters-bar">
+                            <div class="filter-group" style="flex: 1;">
+                                <input type="text" id="search-cases" placeholder="Search by name, case ID, or location...">
+                            </div>
+                            <div class="filter-group">
+                                <select id="filter-urgency">
+                                    <option value="">All Urgencies</option>
+                                    <option value="normal">Normal</option>
+                                    <option value="urgent">Urgent</option>
+                                    <option value="emergency">Emergency</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Status Sections (Stacked Vertically) -->
+                        <div class="cases-status-sections">
+                            <!-- New Case Section -->
+                            <div class="status-section">
+                                <div class="status-section-header">
+                                    <div class="status-header-left">
+                                        <span class="status-icon">📋</span>
+                                        <h3>New Case</h3>
+                                        <span class="status-count" id="count-new_case">0</span>
+                                    </div>
+                                </div>
+                                <div class="status-section-content">
+                                    <table class="cases-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Case ID</th>
+                                                <th>Name</th>
+                                                <th>Location</th>
+                                                <th>Phone</th>
+                                                <th>Assigned To</th>
+                                                <th>Urgency</th>
+                                                <th>Created</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="cases-new_case">
+                                            <!-- Cases will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <!-- Assigned to Responder Section -->
+                            <div class="status-section">
+                                <div class="status-section-header">
+                                    <div class="status-header-left">
+                                        <span class="status-icon">👤</span>
+                                        <h3>Assigned to Responder</h3>
+                                        <span class="status-count" id="count-assigned_to_responder">0</span>
+                                    </div>
+                                </div>
+                                <div class="status-section-content">
+                                    <table class="cases-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Case ID</th>
+                                                <th>Name</th>
+                                                <th>Location</th>
+                                                <th>Phone</th>
+                                                <th>Assigned To</th>
+                                                <th>Urgency</th>
+                                                <th>Created</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="cases-assigned_to_responder">
+                                            <!-- Cases will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <!-- Follow-up Scheduled Section -->
+                            <div class="status-section">
+                                <div class="status-section-header">
+                                    <div class="status-header-left">
+                                        <span class="status-icon">📅</span>
+                                        <h3>Follow-up Scheduled</h3>
+                                        <span class="status-count" id="count-follow_up_scheduled">0</span>
+                                    </div>
+                                </div>
+                                <div class="status-section-content">
+                                    <table class="cases-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Case ID</th>
+                                                <th>Name</th>
+                                                <th>Location</th>
+                                                <th>Phone</th>
+                                                <th>Assigned To</th>
+                                                <th>Urgency</th>
+                                                <th>Created</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="cases-follow_up_scheduled">
+                                            <!-- Cases will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <!-- Closed Section -->
+                            <div class="status-section">
+                                <div class="status-section-header">
+                                    <div class="status-header-left">
+                                        <span class="status-icon">✅</span>
+                                        <h3>Closed</h3>
+                                        <span class="status-count" id="count-closed">0</span>
+                                    </div>
+                                </div>
+                                <div class="status-section-content">
+                                    <table class="cases-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Case ID</th>
+                                                <th>Name</th>
+                                                <th>Location</th>
+                                                <th>Phone</th>
+                                                <th>Assigned To</th>
+                                                <th>Urgency</th>
+                                                <th>Created</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="cases-closed">
+                                            <!-- Cases will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

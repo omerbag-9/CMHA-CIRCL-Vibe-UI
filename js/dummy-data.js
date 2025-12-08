@@ -330,6 +330,121 @@ const dummyData = {
         }
     },
 
+    // Generate dummy public requests
+    generatePublicRequests() {
+        const requests = [];
+        const names = [
+            'Alex Thompson', 'Jessica Martinez', 'Ryan O\'Connor', 'Amanda Foster',
+            'Daniel Kim', 'Sophie Chen', 'Marcus Johnson', 'Emma Wilson',
+            'Chris Anderson', 'Olivia Brown', 'Jordan Lee', 'Taylor Davis'
+        ];
+        const locations = [
+            '123 Main St, Vancouver, BC', '456 Oak Ave, Burnaby, BC', '789 Pine Rd, Surrey, BC',
+            '321 Elm St, Richmond, BC', '654 Maple Dr, Coquitlam, BC', '987 Cedar Ln, North Vancouver, BC',
+            '147 Spruce Way, New Westminster, BC', '258 Birch St, Port Moody, BC', '369 Willow Ave, Langley, BC'
+        ];
+        const messages = [
+            'I\'m feeling overwhelmed and need someone to talk to. I\'ve been struggling with anxiety and depression.',
+            'I need help finding mental health resources in my area. Can someone guide me?',
+            'I\'m in crisis and don\'t know where to turn. I feel isolated and alone.',
+            'I need support dealing with a recent loss. I\'m having trouble coping.',
+            'I\'m worried about a friend who seems to be in distress. How can I help them?',
+            'I need information about crisis support services available in my community.',
+            'I\'m experiencing a mental health crisis and need immediate support.',
+            'I need help accessing mental health services. I don\'t know where to start.',
+            'I\'m feeling suicidal and need someone to talk to right now.',
+            'I need support for managing stress and anxiety in my daily life.',
+            'I\'m concerned about my mental health and need professional guidance.',
+            'I need help understanding my options for mental health treatment.'
+        ];
+        const statuses = ['new_case', 'assigned_to_responder', 'follow_up_scheduled', 'closed'];
+        const urgencies = ['normal', 'normal', 'urgent', 'normal', 'urgent', 'normal', 'emergency', 'normal', 'normal', 'urgent', 'normal', 'normal'];
+        // Whether the form was filled for self or someone else
+        const isForSelf = [true, true, true, true, false, true, true, true, true, false, true, false];
+        const personInCrisisNames = [
+            null, null, null, null, 'Michael Foster', null, null, null, null, 'Sarah Brown', null, 'Alex Davis'
+        ];
+        
+        const now = new Date();
+        
+        for (let i = 0; i < 12; i++) {
+            const hoursAgo = Math.floor(Math.random() * 72); // Last 3 days
+            const createdAt = new Date(now.getTime() - hoursAgo * 60 * 60 * 1000);
+            const status = statuses[Math.floor(Math.random() * statuses.length)];
+            const urgency = urgencies[i];
+            const isEmergency = urgency === 'emergency';
+            const forSelf = isForSelf[i];
+            
+            const requestData = {
+                id: `public-request-${i + 1}`,
+                caseId: `PR-2024-${String(300000 + i).padStart(6, '0')}`,
+                callerName: names[i],
+                callerPhone: `604-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`,
+                callerLocation: locations[Math.floor(Math.random() * locations.length)],
+                initialNotes: messages[i],
+                contactMethod: 'web',
+                crisisType: isEmergency ? 'emergency' : urgency === 'urgent' ? 'urgent' : 'routine',
+                urgency: urgency,
+                createdBy: 'public',
+                status: isEmergency ? 'assigned_to_responder' : status,
+                isPublicCase: true,
+                isForSelf: forSelf,
+                personInCrisisName: forSelf ? null : personInCrisisNames[i],
+                createdAt: createdAt.toISOString(),
+                updatedAt: createdAt.toISOString(),
+                timeline: [{
+                    action: 'Public Request Submitted via Web Form',
+                    timestamp: createdAt.toISOString(),
+                    user: 'System'
+                }]
+            };
+            
+            // Add assignment for some requests
+            if (status === 'assigned_to_responder' && Math.random() > 0.3) {
+                const responderIds = ['2', '5', '6', '7', '8', '9', '10'];
+                const responderNames = ['Sarah Responder', 'Michael Brown', 'Jessica Lee', 'David Chen', 'Emily White', 'Robert Kim', 'Amanda Garcia'];
+                const responderIndex = Math.floor(Math.random() * responderIds.length);
+                
+                requestData.assignedTo = responderIds[responderIndex];
+                requestData.assignedToName = responderNames[responderIndex];
+                const assignedTime = new Date(createdAt.getTime() + Math.random() * 60 * 60 * 1000);
+                requestData.assignedAt = assignedTime.toISOString();
+                requestData.timeline.push({
+                    action: `Assigned to ${responderNames[responderIndex]}`,
+                    timestamp: assignedTime.toISOString(),
+                    user: 'John Dispatcher'
+                });
+            }
+            
+            // Add follow-up for some requests
+            if (status === 'follow_up_scheduled') {
+                const followupTime = new Date(createdAt.getTime() + (24 + Math.random() * 24) * 60 * 60 * 1000);
+                requestData.followupScheduled = true;
+                requestData.followupTime = followupTime.toISOString();
+                requestData.timeline.push({
+                    action: 'Follow-up scheduled',
+                    timestamp: followupTime.toISOString(),
+                    user: 'John Dispatcher'
+                });
+            }
+            
+            // Add closure for closed requests
+            if (status === 'closed') {
+                const closedTime = new Date(createdAt.getTime() + (2 + Math.random() * 5) * 60 * 60 * 1000);
+                requestData.closedAt = closedTime.toISOString();
+                requestData.timeline.push({
+                    action: 'Case Closed',
+                    timestamp: closedTime.toISOString(),
+                    user: 'John Dispatcher'
+                });
+            }
+            
+            requests.push(requestData);
+        }
+        
+        return requests;
+    },
+
     // Initialize all dummy data
     init() {
         try {
@@ -352,10 +467,16 @@ const dummyData = {
             const validStatuses = ['new_case', 'assigned_to_responder', 'follow_up_scheduled', 'closed'];
             const hasOldStatuses = existingCases.some(c => !validStatuses.includes(c.status));
             
-            // Regenerate all cases if there are none or if any have old statuses
-            if (existingCases.length === 0 || hasOldStatuses) {
+            // Check if we have public requests
+            const hasPublicRequests = existingCases.some(c => c.isPublicCase === true);
+            
+            // Regenerate all cases if there are none or if any have old statuses or no public requests
+            if (existingCases.length === 0 || hasOldStatuses || !hasPublicRequests) {
                 if (hasOldStatuses) {
                     console.log('🔄 Found cases with old statuses, regenerating all cases...');
+                }
+                if (!hasPublicRequests) {
+                    console.log('🔄 No public requests found, generating...');
                 }
                 
                 // First generate regular cases
@@ -364,14 +485,17 @@ const dummyData = {
                 // Then generate cases specifically for busy responders
                 const busyResponderCases = this.assignCasesToBusyResponders();
                 
+                // Generate public requests
+                const publicRequests = this.generatePublicRequests();
+                
                 // Combine all cases
-                const allCases = [...regularCases, ...busyResponderCases];
+                const allCases = [...regularCases, ...busyResponderCases, ...publicRequests];
                 
                 // Sort by creation date (newest first)
                 allCases.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 
                 localStorage.setItem('crcl_cases', JSON.stringify(allCases));
-                console.log(`✅ Generated ${regularCases.length} regular cases and ${busyResponderCases.length} cases for busy responders`);
+                console.log(`✅ Generated ${regularCases.length} regular cases, ${busyResponderCases.length} cases for busy responders, and ${publicRequests.length} public requests`);
             } else {
                 console.log(`ℹ️ ${existingCases.length} cases already exist with valid statuses, skipping dummy data generation`);
             }
