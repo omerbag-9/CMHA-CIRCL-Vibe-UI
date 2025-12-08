@@ -169,7 +169,7 @@ function scheduleFollowup(caseId) {
     dataManager.updateCase(caseId, {
         followupScheduled: true,
         followupTime: followupTime.toISOString(),
-        status: 'followup_scheduled'
+        status: 'follow_up_scheduled'
     });
 
     utils.showNotification(`Follow-up scheduled for ${utils.formatDate(followupTime)}`, 'success');
@@ -177,9 +177,16 @@ function scheduleFollowup(caseId) {
 }
 
 function updateCaseStatus(caseId) {
-    const status = prompt('Enter new status (new, active, pending, closed):', 'active');
-    if (!status) return;
-
+    const statusOptions = [
+        'new_case',
+        'assigned_to_responder',
+        'follow_up_scheduled',
+        'closed'
+    ];
+    const statusText = prompt('Enter new status:\n- new_case\n- assigned_to_responder\n- follow_up_scheduled\n- closed', 'assigned_to_responder');
+    if (!statusText) return;
+    
+    const status = statusOptions.find(s => s === statusText) || statusText;
     dataManager.updateCase(caseId, { status });
     utils.showNotification('Status updated', 'success');
     setTimeout(() => window.location.reload(), 1000);

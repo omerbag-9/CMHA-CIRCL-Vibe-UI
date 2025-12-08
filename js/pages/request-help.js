@@ -24,7 +24,7 @@ function submitRequest() {
         crisisType: formData.get('emergency') ? 'emergency' : 'routine',
         urgency: formData.get('emergency') ? 'emergency' : 'normal',
         createdBy: 'public',
-        status: formData.get('emergency') ? 'emergency' : 'new',
+        status: formData.get('emergency') ? 'assigned_to_responder' : 'new_case',
         isPublicCase: true
     };
 

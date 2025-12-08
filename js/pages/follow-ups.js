@@ -367,7 +367,9 @@ function completeFollowup() {
     if (outcome === 'resolved') {
         newStatus = 'closed';
     } else if (outcome === 'needs-support' || outcome === 'escalate') {
-        newStatus = 'active';
+        newStatus = 'assigned_to_responder';
+    } else if (outcome === 'improving') {
+        newStatus = 'follow_up_scheduled';
     }
     
     dataManager.updateCase(currentFollowupCaseId, {

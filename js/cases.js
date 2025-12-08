@@ -109,7 +109,7 @@ const cases = {
         dataManager.updateCase(app.selectedCaseId, {
             assignedTo: app.selectedResponder,
             assignedToName: responder.name,
-            status: 'active',
+            status: 'assigned_to_responder',
             assignedAt: new Date().toISOString()
         });
 
@@ -126,7 +126,8 @@ const cases = {
     escalateCase(caseId) {
         if (confirm('Are you sure you want to escalate this case to emergency services?')) {
             dataManager.updateCase(caseId, {
-                status: 'emergency_escalated',
+                status: 'assigned_to_responder',
+                urgency: 'emergency',
                 escalatedAt: new Date().toISOString()
             });
             utils.showNotification('Case escalated to emergency services', 'success');
@@ -140,8 +141,8 @@ const cases = {
     getStatistics() {
         const allCases = dataManager.getCases();
         return {
-            active: allCases.filter(c => c.status === 'active').length,
-            pending: allCases.filter(c => c.status === 'pending' || c.status === 'new').length,
+            active: allCases.filter(c => c.status === 'assigned_to_responder').length,
+            pending: allCases.filter(c => c.status === 'new_case').length,
             closed: allCases.filter(c => c.status === 'closed').length,
             total: allCases.length
         };

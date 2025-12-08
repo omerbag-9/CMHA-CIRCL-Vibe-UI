@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responders - CRCL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/utilities.css">
+</head>
+<body>
+    <div id="app">
+        <div class="layout">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h2>CRCL</h2>
+                </div>
+                <nav class="sidebar-nav">
+                    <a href="dashboard.html" class="nav-item">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
+                    <a href="cases.html" class="nav-item">
+                        <span class="nav-icon">📋</span>
+                        <span class="nav-text">All Cases</span>
+                    </a>
+                    <a href="responders.html" class="nav-item">
+                        <span class="nav-icon">👥</span>
+                        <span class="nav-text">Responders</span>
+                    </a>
+                    <a href="follow-ups.html" class="nav-item">
+                        <span class="nav-icon">📅</span>
+                        <span class="nav-text">Follow-ups</span>
+                    </a>
+                    <a href="chat.html" class="nav-item">
+                        <span class="nav-icon">💬</span>
+                        <span class="nav-text">Messages</span>
+                    </a>
+                </nav>
+            </aside>
+            <main class="main-content">
+                <header class="top-bar">
+                    <div class="top-bar-left">
+                        <button class="menu-toggle">☰</button>
+                        <h1>Crisis Responders</h1>
+                    </div>
+                    <div class="top-bar-right">
+                        <button class="icon-btn" id="notifications-btn">🔔</button>
+                        <div class="user-menu">
+                            <span id="user-name">Dispatcher</span>
+                            <button class="icon-btn" id="logout-btn">Logout</button>
+                        </div>
+                    </div>
+                </header>
+                <div class="content-area">
+                    <div class="filters-bar">
+                        <div class="filter-group" style="flex: 1;">
+                            <label>Search Responder</label>
+                            <input type="text" id="search-responders" placeholder="Search by name or location...">
+                        </div>
+                        <div class="filter-group">
+                            <label>Status</label>
+                            <select id="filter-responder-status">
+                                <option value="">All</option>
+                                <option value="available">Available</option>
+                                <option value="busy">Busy</option>
+                                <option value="offline">Offline</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Location</label>
+                            <select id="filter-city">
+                                <option value="">All Cities</option>
+                                <option value="Vancouver">Vancouver</option>
+                                <option value="Burnaby">Burnaby</option>
+                                <option value="Surrey">Surrey</option>
+                                <option value="Richmond">Richmond</option>
+                                <option value="Coquitlam">Coquitlam</option>
+                                <option value="New Westminster">New Westminster</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-header">
+                            <h2>Available Responders</h2>
+                            <span id="available-count" class="badge badge-new">0 Available</span>
+                        </div>
+                        <div id="available-responders" class="responders-grid">
+                            <!-- Available responders will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-header">
+                            <h2>Busy Responders</h2>
+                            <span id="busy-count" class="badge badge-urgent">0 Busy</span>
+                        </div>
+                        <div id="busy-responders" class="responders-grid">
+                            <!-- Busy responders will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-header">
+                            <h2>Offline Responders</h2>
+                            <span id="offline-count" class="badge badge-closed">0 Offline</span>
+                        </div>
+                        <div id="offline-responders" class="responders-grid">
+                            <!-- Offline responders will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Assign Case Modal -->
+    <div id="modal-overlay" class="modal-overlay" style="display: none;">
+        <div class="modal" id="assign-case-modal">
+            <div class="modal-header">
+                <h2>Assign Case to <span id="selected-responder-name"></span></h2>
+                <button class="modal-close" onclick="closeAssignModal()">×</button>
+            </div>
+            <div class="modal-content">
+                <div class="responder-info-summary" id="responder-summary" style="margin-bottom: 24px; padding: 16px; background: var(--charcoal); border-radius: 6px;">
+                    <!-- Responder summary will be shown here -->
+                </div>
+                
+                <div class="form-group">
+                    <label>Search Cases</label>
+                    <input type="text" id="search-assign-cases" placeholder="Search by case ID or person name...">
+                </div>
+
+                <div class="section">
+                    <h3 style="font-size: 16px; margin-bottom: 16px; color: var(--text-primary);">Available Cases in Area</h3>
+                    <div id="available-cases-list" style="max-height: 400px; overflow-y: auto;">
+                        <!-- Cases will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAssignModal()">Cancel</button>
+                <button class="btn btn-primary" id="confirm-assign-btn" disabled>Assign Case</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/data.js"></script>
+    <script src="../../js/dummy-responders.js"></script>
+    <script src="../../js/dummy-data.js"></script>
+    <script src="../../js/init-data.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/cases.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/app.js"></script>
+    <script src="../../js/pages/responders.js"></script>
+</body>
+</html>
+

@@ -77,19 +77,23 @@ const utils = {
     // Get badge class
     getBadgeClass(status) {
         const badges = {
-            'new': 'badge-new',
-            'active': 'badge-active',
-            'urgent': 'badge-urgent',
-            'emergency': 'badge-emergency',
-            'closed': 'badge-closed',
-            'pending': 'badge-urgent'
+            'new_case': 'badge-new',
+            'assigned_to_responder': 'badge-active',
+            'follow_up_scheduled': 'badge-urgent',
+            'closed': 'badge-closed'
         };
         return badges[status] || 'badge-new';
     },
 
     // Get badge text
     getBadgeText(status) {
-        return status.charAt(0).toUpperCase() + status.slice(1);
+        const statusTexts = {
+            'new_case': 'New Case',
+            'assigned_to_responder': 'Assigned to Responder',
+            'follow_up_scheduled': 'Follow-up Scheduled',
+            'closed': 'Closed'
+        };
+        return statusTexts[status] || status.charAt(0).toUpperCase() + status.slice(1).replace(/_/g, ' ');
     }
 };
 

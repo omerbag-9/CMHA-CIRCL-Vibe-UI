@@ -118,7 +118,7 @@ const dataManager = {
             ...caseData,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            status: 'new',
+            status: 'new_case',
             timeline: [{
                 action: 'Case Created',
                 timestamp: new Date().toISOString(),

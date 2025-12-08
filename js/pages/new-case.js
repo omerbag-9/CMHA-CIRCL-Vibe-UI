@@ -114,7 +114,7 @@ function createCase() {
                 formData.get('crisisType') === 'urgent' ? 'urgent' : 'normal',
         initialNotes: formData.get('initialNotes'),
         createdBy: currentUser.id,
-        status: immediateDanger ? 'emergency' : 'new'
+        status: immediateDanger ? 'assigned_to_responder' : 'new_case'
     };
 
     // Collect all assessment answers

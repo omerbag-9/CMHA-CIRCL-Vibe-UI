@@ -22,7 +22,7 @@ function loadDashboard() {
     const searchTerm = document.getElementById('search-dashboard-cases')?.value.toLowerCase() || '';
     
     let activeCases = dataManager.getCases()
-        .filter(c => c.status === 'active' || c.status === 'new' || c.status === 'pending');
+        .filter(c => c.status === 'new_case' || c.status === 'assigned_to_responder' || c.status === 'follow_up_scheduled');
     
     // Apply search filter
     if (searchTerm) {

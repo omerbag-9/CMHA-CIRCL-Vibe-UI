@@ -26,13 +26,22 @@
             }
         }
         
-        // Then initialize dummy data
+        // Initialize responders BEFORE cases (so cases can be assigned to them)
+        if (typeof dummyResponders !== 'undefined' && typeof dummyResponders.init === 'function') {
+            try {
+                dummyResponders.init();
+            } catch (e) {
+                console.error('Error initializing dummyResponders:', e);
+            }
+        }
+        
+        // Then initialize dummy data (which will assign cases to busy responders)
         if (typeof dummyData !== 'undefined' && typeof dummyData.init === 'function') {
             try {
-                // Small delay to ensure localStorage is ready
+                // Small delay to ensure responders are initialized first
                 setTimeout(() => {
                     dummyData.init();
-                }, 100);
+                }, 150);
             } catch (e) {
                 console.error('Error initializing dummyData:', e);
             }
