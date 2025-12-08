@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRCL - Crisis Response System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/utilities.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Login Page (Default) -->
+        <div id="login-page" class="page active">
+            <div class="login-container">
+                <div class="login-card">
+                    <div class="login-header">
+                        <h1>CRCL</h1>
+                        <p>Crisis Response System</p>
+                    </div>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="remember">
+                                <span>Remember me</span>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Sign In</button>
+                        <div id="login-error" class="error-message"></div>
+                    </form>
+                    <div class="login-footer">
+                        <a href="pages/public/request-help.html">Need Help? Request Support</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

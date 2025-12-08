@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Help - CRCL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/utilities.css">
+</head>
+<body>
+    <div id="app">
+        <div class="public-page">
+            <div class="public-container">
+                <div class="public-header">
+                    <h1>CRCL</h1>
+                    <p>Crisis Response & Support</p>
+                </div>
+                <div class="public-card">
+                    <h2>Need Help? We're Here for You</h2>
+                    <form id="request-help-form">
+                        <div class="form-group">
+                            <label for="request-name">Your Name *</label>
+                            <input type="text" id="request-name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="request-phone">Phone Number *</label>
+                            <input type="tel" id="request-phone" name="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="request-location">Location *</label>
+                            <input type="text" id="request-location" name="location" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="request-message">How can we help? *</label>
+                            <textarea id="request-message" name="message" rows="5" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="request-emergency" name="emergency">
+                                <span>This is an emergency</span>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Submit Request</button>
+                        <div id="request-error" class="error-message"></div>
+                        <div id="request-success" class="success-message" style="display: none;">
+                            <p>Your request has been submitted. We'll contact you shortly.</p>
+                            <p>Case ID: <span id="case-id-display"></span></p>
+                        </div>
+                    </form>
+                    <div class="public-footer">
+                        <p>Or call us: <a href="tel:1-800-CRCL-HELP">1-800-CRCL-HELP</a></p>
+                        <a href="../../index.html">Back to Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/data.js"></script>
+    <script src="../../js/pages/request-help.js"></script>
+</body>
+</html>
+

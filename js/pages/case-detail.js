@@ -1,0 +1,197 @@
+// Case Detail Page Logic
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Check authentication
+    if (!auth.isAuthenticated()) {
+        window.location.href = '/index.html';
+        return;
+    }
+
+    // Get case ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const caseId = urlParams.get('id');
+
+    if (caseId) {
+        loadCaseDetail(caseId);
+    } else {
+        document.getElementById('case-detail-content').innerHTML = `
+            <div class="empty-state">
+                <p>Case not found</p>
+                <a href="cases.html" class="btn btn-primary">Back to Cases</a>
+            </div>
+        `;
+    }
+});
+
+function loadCaseDetail(caseId) {
+    const caseData = dataManager.getCaseById(caseId);
+    
+    if (!caseData) {
+        document.getElementById('case-detail-content').innerHTML = `
+            <div class="empty-state">
+                <p>Case not found</p>
+                <a href="cases.html" class="btn btn-primary">Back to Cases</a>
+            </div>
+        `;
+        return;
+    }
+
+    // Update title
+    const titleEl = document.getElementById('case-detail-title');
+    if (titleEl) {
+        titleEl.textContent = `${caseData.caseId} ${caseData.urgency ? `[${caseData.urgency}]` : ''}`;
+    }
+
+    // Render case details
+    renderCaseDetail(caseData);
+}
+
+function renderCaseDetail(caseData) {
+    const container = document.getElementById('case-detail-content');
+    if (!container) return;
+
+    const badgeClass = utils.getBadgeClass(caseData.status);
+    const badgeText = utils.getBadgeText(caseData.status);
+
+    container.innerHTML = `
+        <div class="case-detail-grid">
+            <div class="case-info-section">
+                <div class="info-card">
+                    <h3>Caller Information</h3>
+                    <div class="info-item">
+                        <strong>Name:</strong> ${caseData.callerName || 'Not provided'}
+                    </div>
+                    <div class="info-item">
+                        <strong>Phone:</strong> ${caseData.callerPhone || 'Not provided'}
+                    </div>
+                    <div class="info-item">
+                        <strong>Location:</strong> ${caseData.callerLocation || 'Not provided'}
+                    </div>
+                    <div class="info-item">
+                        <strong>Contact Method:</strong> ${caseData.contactMethod || 'Unknown'}
+                    </div>
+                    <div class="case-actions">
+                        <button class="btn btn-secondary">📞 Call</button>
+                        <button class="btn btn-secondary">💬 SMS</button>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3>Case Status</h3>
+                    <div class="info-item">
+                        <span class="case-badge ${badgeClass}">${badgeText}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Urgency:</strong> ${caseData.urgency || 'Normal'}
+                    </div>
+                    <div class="info-item">
+                        <strong>Crisis Type:</strong> ${caseData.crisisType || 'Not specified'}
+                    </div>
+                    ${caseData.assignedTo ? `
+                        <div class="info-item">
+                            <strong>Assigned To:</strong> ${caseData.assignedToName || 'Responder'}
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+
+            <div class="case-timeline-section">
+                <div class="info-card">
+                    <h3>Timeline</h3>
+                    <div class="timeline">
+                        ${caseData.timeline ? caseData.timeline.map(item => `
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-time">${utils.formatDate(item.timestamp)}</div>
+                                    <div class="timeline-text">${item.action}</div>
+                                </div>
+                            </div>
+                        `).join('') : ''}
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3>Case Notes</h3>
+                    <div id="case-notes">
+                        ${caseData.initialNotes ? `<p>${caseData.initialNotes}</p>` : '<p>No notes yet</p>'}
+                    </div>
+                    <div class="form-group mt-3">
+                        <textarea id="new-note" rows="3" placeholder="Add a note..."></textarea>
+                        <button class="btn btn-primary mt-2" onclick="addCaseNote('${caseData.id}')">Add Note</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="case-actions-bar">
+            ${!caseData.assignedTo ? `
+                <button class="btn btn-primary" onclick="cases.openAssignModal('${caseData.id}')">Assign Responder</button>
+            ` : ''}
+            <button class="btn btn-secondary" onclick="scheduleFollowup('${caseData.id}')">Schedule Follow-up</button>
+            ${caseData.urgency === 'emergency' ? `
+                <button class="btn btn-secondary" onclick="cases.escalateCase('${caseData.id}')">Escalate Emergency</button>
+            ` : ''}
+            <button class="btn btn-secondary" onclick="updateCaseStatus('${caseData.id}')">Update Status</button>
+            <button class="btn btn-secondary" onclick="closeCase('${caseData.id}')">Close Case</button>
+        </div>
+    `;
+}
+
+function addCaseNote(caseId) {
+    const noteInput = document.getElementById('new-note');
+    if (!noteInput || !noteInput.value.trim()) return;
+
+    const caseData = dataManager.getCaseById(caseId);
+    if (!caseData) return;
+
+    const currentUser = auth.getCurrentUser();
+    const notes = caseData.notes || [];
+    notes.push({
+        text: noteInput.value.trim(),
+        author: currentUser.name,
+        timestamp: new Date().toISOString()
+    });
+
+    dataManager.updateCase(caseId, { notes });
+    noteInput.value = '';
+    loadCaseDetail(caseId);
+    utils.showNotification('Note added', 'success');
+}
+
+function scheduleFollowup(caseId) {
+    const hours = prompt('Schedule follow-up in how many hours? (24 or 48)', '24');
+    if (!hours) return;
+
+    const followupTime = new Date();
+    followupTime.setHours(followupTime.getHours() + parseInt(hours));
+
+    dataManager.updateCase(caseId, {
+        followupScheduled: true,
+        followupTime: followupTime.toISOString(),
+        status: 'followup_scheduled'
+    });
+
+    utils.showNotification('Follow-up scheduled', 'success');
+    setTimeout(() => window.location.reload(), 1000);
+}
+
+function updateCaseStatus(caseId) {
+    const status = prompt('Enter new status (new, active, pending, closed):', 'active');
+    if (!status) return;
+
+    dataManager.updateCase(caseId, { status });
+    utils.showNotification('Status updated', 'success');
+    setTimeout(() => window.location.reload(), 1000);
+}
+
+function closeCase(caseId) {
+    if (!confirm('Are you sure you want to close this case?')) return;
+
+    dataManager.updateCase(caseId, { status: 'closed', closedAt: new Date().toISOString() });
+    utils.showNotification('Case closed', 'success');
+    setTimeout(() => {
+        window.location.href = 'cases.html';
+    }, 1000);
+}
+

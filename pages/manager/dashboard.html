@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard - CRCL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/utilities.css">
+</head>
+<body>
+    <div id="app">
+        <div class="layout">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h2>CRCL</h2>
+                </div>
+                <nav class="sidebar-nav">
+                    <a href="dashboard.html" class="nav-item active">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
+                    <a href="team.html" class="nav-item">
+                        <span class="nav-icon">👥</span>
+                        <span class="nav-text">Team</span>
+                    </a>
+                    <a href="reports.html" class="nav-item">
+                        <span class="nav-icon">📈</span>
+                        <span class="nav-text">Reports</span>
+                    </a>
+                </nav>
+            </aside>
+            <main class="main-content">
+                <header class="top-bar">
+                    <div class="top-bar-left">
+                        <button class="menu-toggle">☰</button>
+                        <h1>Agency Manager Dashboard</h1>
+                    </div>
+                    <div class="top-bar-right">
+                        <div class="user-menu">
+                            <span id="user-name">Manager</span>
+                            <button class="icon-btn" id="logout-btn">Logout</button>
+                        </div>
+                    </div>
+                </header>
+                <div class="content-area">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Active Cases</div>
+                            <div class="stat-value" id="stat-active">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">This Week</div>
+                            <div class="stat-value" id="stat-week">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Response Time</div>
+                            <div class="stat-value" id="stat-response">0 min</div>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <h2>Team Performance</h2>
+                        <div class="info-card">
+                            <p>Team performance metrics will be displayed here.</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/data.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/app.js"></script>
+</body>
+</html>
+
