@@ -7,29 +7,49 @@ const cases = {
         const badgeText = utils.getBadgeText(caseData.status);
         const urgencyBadge = caseData.urgency ? `<span class="case-badge badge-${caseData.urgency}">${caseData.urgency}</span>` : '';
         
+        // Get flow-specific display information
+        let displayName = caseData.callerName || 'Unknown';
+        let displayLocation = caseData.callerLocation || 'Location not provided';
+        let flowBadge = '';
+        
+        if (caseData.flowType === 'caregiver') {
+            displayName = `${caseData.caregiverName || caseData.callerName || 'Unknown'} (Caregiver)`;
+            displayLocation = caseData.personInCrisisLocation || caseData.callerLocation || 'Location not provided';
+            flowBadge = '<span class="case-badge badge-info">Caregiver</span>';
+        } else if (caseData.flowType === 'emergency') {
+            displayName = caseData.callerName || 'Emergency Caller';
+            displayLocation = caseData.personInCrisisLocation || caseData.callerLocation || 'Location not provided';
+            flowBadge = '<span class="case-badge badge-emergency">Emergency</span>';
+        } else if (caseData.flowType === 'known_person') {
+            displayName = `${caseData.personInCrisisName || 'Person in Crisis'} (via ${caseData.callerName || 'Caller'})`;
+            displayLocation = caseData.personInCrisisLocation || caseData.callerLocation || 'Location not provided';
+            flowBadge = '<span class="case-badge badge-info">Known Person</span>';
+        }
+        
         return `
             <div class="case-card" onclick="cases.viewCase('${caseData.id}')">
                 <div class="case-card-header">
                     <div>
                         <div class="case-id">${caseData.caseId}</div>
                         <div class="case-info">
-                            <div class="case-info-item">${caseData.callerName || 'Unknown'}</div>
+                            <div class="case-info-item">${displayName}</div>
                             <div class="case-info-item">${utils.timeAgo(caseData.createdAt)}</div>
                         </div>
                     </div>
                     <div>
+                        ${flowBadge}
                         ${urgencyBadge}
                         <span class="case-badge ${badgeClass}">${badgeText}</span>
                     </div>
                 </div>
                 <div class="case-info">
-                    <div class="case-info-item">📍 ${caseData.callerLocation || 'Location not provided'}</div>
+                    <div class="case-info-item">📍 ${displayLocation}</div>
                     ${caseData.assignedTo ? `<div class="case-info-item">👤 Assigned to: ${caseData.assignedToName || 'Responder'}</div>` : ''}
                 </div>
                 <div class="case-actions">
                     <button class="btn btn-primary" onclick="event.stopPropagation(); cases.viewCase('${caseData.id}')">View</button>
                     ${!caseData.assignedTo ? `<button class="btn btn-secondary" onclick="event.stopPropagation(); cases.openAssignModal('${caseData.id}')">Assign</button>` : ''}
-                    ${caseData.urgency === 'emergency' ? `<button class="btn btn-secondary" onclick="event.stopPropagation(); cases.escalateCase('${caseData.id}')">Escalate</button>` : ''}
+                    ${caseData.urgency === 'emergency' || caseData.isEmergency ? `<button class="btn btn-secondary" onclick="event.stopPropagation(); cases.escalateCase('${caseData.id}')">Escalate</button>` : ''}
                 </div>
             </div>
         `;

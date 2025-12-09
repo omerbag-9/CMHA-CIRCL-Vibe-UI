@@ -10,12 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
     loadFollowUps();
     setupFilters();
     setupEventListeners();
-    setupChat();
 });
 
 let currentFollowupCaseId = null;
-let currentPublicUserId = null;
-let chatPollInterval = null;
 
 function loadFollowUps() {
     const allCases = dataManager.getCases();
@@ -102,7 +99,7 @@ function renderFollowUps(followups, containerId, isDue) {
                     <div class="case-info-item">📞 ${caseData.callerPhone || 'Phone not provided'}</div>
                 </div>
                 <div class="case-actions">
-                    <button class="btn btn-primary" onclick="openFollowupChat('${caseData.id}')">💬 Chat & Follow-up</button>
+                    <a href="chat.html?caseId=${caseData.id}" class="btn btn-primary">💬 Chat & Follow-up</a>
                     <button class="btn btn-secondary" onclick="openFollowupModal('${caseData.id}')">Complete Follow-up</button>
                     <a href="case-detail.html?id=${caseData.id}" class="btn btn-secondary">View Case</a>
                     <button class="btn btn-secondary" onclick="rescheduleFollowup('${caseData.id}')">Reschedule</button>
@@ -135,185 +132,6 @@ function setupEventListeners() {
     if (completeBtn) {
         completeBtn.addEventListener('click', completeFollowup);
     }
-
-    // Chat input
-    const chatInput = document.getElementById('followup-chat-input');
-    const sendBtn = document.getElementById('followup-send-btn');
-    
-    if (sendBtn) {
-        sendBtn.addEventListener('click', sendFollowupMessage);
-    }
-    
-    if (chatInput) {
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendFollowupMessage();
-            }
-        });
-    }
-}
-
-function setupChat() {
-    // Start polling for new messages if chat is open
-    if (currentFollowupCaseId) {
-        startChatPolling();
-    }
-}
-
-function startChatPolling() {
-    if (chatPollInterval) {
-        clearInterval(chatPollInterval);
-    }
-    
-    chatPollInterval = setInterval(() => {
-        if (currentFollowupCaseId && currentPublicUserId) {
-            loadFollowupChat();
-        }
-    }, 2000);
-}
-
-function stopChatPolling() {
-    if (chatPollInterval) {
-        clearInterval(chatPollInterval);
-        chatPollInterval = null;
-    }
-}
-
-function openFollowupChat(caseId) {
-    currentFollowupCaseId = caseId;
-    const caseData = dataManager.getCaseById(caseId);
-    
-    if (!caseData) return;
-    
-    // Find public user ID for this case
-    const allMessages = dataManager.getMessages();
-    const caseMessage = allMessages.find(m => m.caseId === caseId && m.isPublic);
-    
-    if (caseMessage) {
-        // Use the fromId if it's a public user, or find the public user in the conversation
-        if (caseMessage.fromId.startsWith('public_')) {
-            currentPublicUserId = caseMessage.fromId;
-        } else if (caseMessage.toId.startsWith('public_')) {
-            currentPublicUserId = caseMessage.toId;
-        } else {
-            // Create a public user ID if it doesn't exist
-            currentPublicUserId = 'public_' + caseId;
-        }
-    } else {
-        // Create a public user ID if it doesn't exist
-        currentPublicUserId = 'public_' + caseId;
-    }
-    
-    // Update chat header
-    const chatHeader = document.querySelector('.followup-chat-header h3');
-    const chatSubtitle = document.querySelector('.followup-chat-subtitle');
-    
-    if (chatHeader) {
-        chatHeader.textContent = `Chat: ${caseData.callerName || 'Person in Crisis'}`;
-    }
-    
-    if (chatSubtitle) {
-        chatSubtitle.textContent = `Case: ${caseData.caseId} • Follow-up: ${utils.formatDate(caseData.followupTime)}`;
-    }
-    
-    // Show chat input
-    const chatInputContainer = document.getElementById('followup-chat-input-container');
-    if (chatInputContainer) {
-        chatInputContainer.style.display = 'flex';
-    }
-    
-    // Load chat messages
-    loadFollowupChat();
-    
-    // Start polling
-    startChatPolling();
-    
-    // Scroll to chat panel on mobile
-    if (window.innerWidth < 768) {
-        document.querySelector('.followups-right').scrollIntoView({ behavior: 'smooth' });
-    }
-}
-
-function loadFollowupChat() {
-    if (!currentFollowupCaseId || !currentPublicUserId) return;
-    
-    const currentUser = auth.getCurrentUser();
-    if (!currentUser) return;
-    
-    // Get messages by conversation
-    let messages = dataManager.getMessagesByConversation(currentUser.id, currentPublicUserId);
-    
-    // Also get messages by case ID to catch any case-linked messages
-    const caseMessages = dataManager.getMessagesByCase(currentFollowupCaseId);
-    
-    // Merge and deduplicate
-    const messageMap = new Map();
-    [...messages, ...caseMessages].forEach(msg => {
-        if (!messageMap.has(msg.id)) {
-            messageMap.set(msg.id, msg);
-        }
-    });
-    
-    messages = Array.from(messageMap.values()).sort((a, b) => 
-        new Date(a.timestamp) - new Date(b.timestamp)
-    );
-    
-    renderFollowupChat(messages, currentUser.id);
-}
-
-function renderFollowupChat(messages, currentUserId) {
-    const container = document.getElementById('followup-chat-messages');
-    if (!container) return;
-    
-    if (messages.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <p>No messages yet. Start the conversation!</p>
-            </div>
-        `;
-        return;
-    }
-    
-    container.innerHTML = messages.map(msg => {
-        const isSent = msg.fromId === currentUserId;
-        const sender = msg.fromId === currentUserId ? 
-            (auth.getCurrentUser()?.name || 'You') : 
-            (dataManager.getCaseById(currentFollowupCaseId)?.callerName || 'Person in Crisis');
-        
-        return `
-            <div class="chat-message ${isSent ? 'sent' : 'received'}">
-                <div class="chat-message-header">${sender}</div>
-                <div class="chat-message-text">${msg.text}</div>
-                <div class="chat-message-time">${utils.formatDate(msg.timestamp)}</div>
-            </div>
-        `;
-    }).join('');
-    
-    // Scroll to bottom
-    container.scrollTop = container.scrollHeight;
-}
-
-function sendFollowupMessage() {
-    const chatInput = document.getElementById('followup-chat-input');
-    if (!chatInput || !chatInput.value.trim() || !currentFollowupCaseId || !currentPublicUserId) return;
-    
-    const currentUser = auth.getCurrentUser();
-    if (!currentUser) return;
-    
-    const messageData = {
-        fromId: currentUser.id,
-        toId: currentPublicUserId,
-        text: chatInput.value.trim(),
-        type: 'text',
-        caseId: currentFollowupCaseId,
-        isPublic: true
-    };
-    
-    dataManager.createMessage(messageData);
-    chatInput.value = '';
-    
-    // Reload chat
-    loadFollowupChat();
 }
 
 function openFollowupModal(caseId) {
@@ -383,28 +201,7 @@ function completeFollowup() {
     utils.showNotification('Follow-up completed successfully', 'success');
     app.closeModal();
     
-    // Clear chat if open
-    stopChatPolling();
     currentFollowupCaseId = null;
-    currentPublicUserId = null;
-    
-    // Reset chat panel
-    const chatHeader = document.querySelector('.followup-chat-header h3');
-    const chatSubtitle = document.querySelector('.followup-chat-subtitle');
-    const chatInputContainer = document.getElementById('followup-chat-input-container');
-    const chatMessages = document.getElementById('followup-chat-messages');
-    
-    if (chatHeader) chatHeader.textContent = 'Chat with Person in Crisis';
-    if (chatSubtitle) chatSubtitle.textContent = 'Select a follow-up to start chatting';
-    if (chatInputContainer) chatInputContainer.style.display = 'none';
-    if (chatMessages) {
-        chatMessages.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-state-icon">💬</div>
-                <p>Select a follow-up case to chat with the person</p>
-            </div>
-        `;
-    }
     
     // Reload follow-ups
     setTimeout(() => {
@@ -431,12 +228,6 @@ function rescheduleFollowup(caseId) {
 }
 
 // Make functions globally available
-window.openFollowupChat = openFollowupChat;
 window.openFollowupModal = openFollowupModal;
 window.rescheduleFollowup = rescheduleFollowup;
-
-// Clean up on page unload
-window.addEventListener('beforeunload', () => {
-    stopChatPolling();
-});
 

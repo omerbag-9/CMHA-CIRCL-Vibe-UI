@@ -17,7 +17,10 @@ const dummyData = {
         const statuses = ['new_case', 'assigned_to_responder', 'follow_up_scheduled', 'closed'];
         const urgencies = ['normal', 'normal', 'urgent', 'normal', 'urgent', 'normal', 'normal', 'normal'];
         const crisisTypes = ['routine', 'routine', 'urgent', 'routine', 'urgent', 'routine', 'routine', 'sensitive'];
-        const contactMethods = ['phone', 'sms', 'phone', 'web', 'phone', 'phone', 'sms', 'phone'];
+        const contactMethods = ['phone', 'sms', 'phone', 'web', 'phone', 'phone', 'sms', 'phone', 'whatsapp'];
+        const flowTypes = ['for_self', 'for_self', 'for_self', 'caregiver', 'known_person', 'for_self', 'emergency', 'caregiver', 'known_person', 'for_self'];
+        const caregiverRelationships = ['doctor', 'nurse', 'family-member', 'friend', 'social-worker'];
+        const emergencyTypes = ['suicide-risk', 'immediate-danger', 'medical-emergency', 'violent-situation'];
         
         const now = new Date();
         
@@ -27,13 +30,19 @@ const dummyData = {
             const status = statuses[Math.floor(Math.random() * statuses.length)];
             const urgency = urgencies[Math.floor(Math.random() * urgencies.length)];
             const crisisType = crisisTypes[Math.floor(Math.random() * crisisTypes.length)];
+            const flowType = flowTypes[i % flowTypes.length];
+            
+            const callerName = names[Math.floor(Math.random() * names.length)];
+            const callerPhone = `604-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`;
+            const callerLocation = locations[Math.floor(Math.random() * locations.length)];
             
             const caseData = {
                 id: `case-${i + 1}`,
                 caseId: `CR-2024-${String(100000 + i).padStart(6, '0')}`,
-                callerName: names[Math.floor(Math.random() * names.length)],
-                callerPhone: `604-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`,
-                callerLocation: locations[Math.floor(Math.random() * locations.length)],
+                flowType: flowType,
+                callerName: callerName,
+                callerPhone: callerPhone,
+                callerLocation: callerLocation,
                 contactMethod: contactMethods[Math.floor(Math.random() * contactMethods.length)],
                 crisisType: crisisType,
                 urgency: urgency,
@@ -48,6 +57,24 @@ const dummyData = {
                     user: 'System'
                 }]
             };
+
+            // Add flow-specific fields
+            if (flowType === 'caregiver') {
+                caseData.caregiverName = callerName;
+                caseData.caregiverPhone = callerPhone;
+                caseData.personInCrisisLocation = locations[Math.floor(Math.random() * locations.length)];
+                caseData.caregiverRelationship = caregiverRelationships[Math.floor(Math.random() * caregiverRelationships.length)];
+            } else if (flowType === 'emergency') {
+                caseData.personInCrisisLocation = locations[Math.floor(Math.random() * locations.length)];
+                caseData.emergencyType = emergencyTypes[Math.floor(Math.random() * emergencyTypes.length)];
+                caseData.isEmergency = true;
+                caseData.urgency = 'emergency';
+                caseData.crisisType = 'emergency';
+            } else if (flowType === 'known_person') {
+                caseData.personInCrisisName = names[Math.floor(Math.random() * names.length)];
+                caseData.personInCrisisPhone = `604-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`;
+                caseData.personInCrisisLocation = locations[Math.floor(Math.random() * locations.length)];
+            }
 
             // Add assignment for cases that are assigned to responder
             if (status === 'assigned_to_responder' && Math.random() > 0.2) {

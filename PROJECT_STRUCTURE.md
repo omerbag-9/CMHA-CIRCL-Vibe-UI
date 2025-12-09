@@ -25,7 +25,6 @@ crcl-system/
 │   │
 │   └── pages/                     # Page-specific scripts
 │       ├── dispatcher-dashboard.js
-│       ├── dispatcher-cases.js
 │       ├── new-case.js
 │       ├── case-detail.js
 │       ├── chat.js
@@ -34,7 +33,6 @@ crcl-system/
 └── pages/                          # HTML pages
     ├── dispatcher/                # Dispatcher role pages
     │   ├── dashboard.html
-    │   ├── cases.html
     │   ├── new-case.html
     │   ├── case-detail.html
     │   └── chat.html
@@ -79,7 +77,6 @@ crcl-system/
 
 #### Page Scripts
 - **pages/dispatcher-dashboard.js**: Dispatcher dashboard logic
-- **pages/dispatcher-cases.js**: Cases list page logic
 - **pages/new-case.js**: New case form logic with dynamic questions
 - **pages/case-detail.js**: Case detail view logic
 - **pages/chat.js**: Chat page initialization
@@ -89,7 +86,6 @@ crcl-system/
 
 #### Dispatcher Pages
 - **dashboard.html**: Main dashboard with statistics and active cases
-- **cases.html**: Full cases list with filters and search
 - **new-case.html**: Create new case form
 - **case-detail.html**: Detailed case view with timeline and actions
 - **chat.html**: Messaging interface

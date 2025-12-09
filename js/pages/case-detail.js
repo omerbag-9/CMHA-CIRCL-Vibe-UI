@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('case-detail-content').innerHTML = `
             <div class="empty-state">
                 <p>Case not found</p>
-                <a href="cases.html" class="btn btn-primary">Back to Cases</a>
+                <a href="dashboard.html" class="btn btn-primary">Back to Dashboard</a>
             </div>
         `;
     }
@@ -30,7 +30,7 @@ function loadCaseDetail(caseId) {
         document.getElementById('case-detail-content').innerHTML = `
             <div class="empty-state">
                 <p>Case not found</p>
-                <a href="cases.html" class="btn btn-primary">Back to Cases</a>
+                <a href="dashboard.html" class="btn btn-primary">Back to Dashboard</a>
             </div>
         `;
         return;
@@ -53,28 +53,140 @@ function renderCaseDetail(caseData) {
     const badgeClass = utils.getBadgeClass(caseData.status);
     const badgeText = utils.getBadgeText(caseData.status);
 
+    // Build flow-specific information sections
+    let flowInfoSection = '';
+    let personInCrisisSection = '';
+    
+    if (caseData.flowType === 'caregiver') {
+        flowInfoSection = `
+            <div class="info-card">
+                <h3>Caregiver Information</h3>
+                <div class="info-item">
+                    <strong>Name:</strong> ${caseData.caregiverName || caseData.callerName || 'Not provided'}
+                </div>
+                <div class="info-item">
+                    <strong>Phone:</strong> ${caseData.caregiverPhone || caseData.callerPhone || 'Not provided'}
+                </div>
+                <div class="info-item">
+                    <strong>Relationship:</strong> ${caseData.caregiverRelationship || 'Not specified'}
+                </div>
+                <div class="info-item">
+                    <strong>Contact Method:</strong> ${caseData.contactMethod || 'Unknown'}
+                </div>
+                <div class="case-actions">
+                    <button class="btn btn-secondary">📞 Call Caregiver</button>
+                    <button class="btn btn-secondary">💬 SMS</button>
+                </div>
+            </div>
+        `;
+        personInCrisisSection = `
+            <div class="info-card">
+                <h3>Person in Crisis Location</h3>
+                <div class="info-item">
+                    <strong>Location:</strong> ${caseData.personInCrisisLocation || 'Not provided'}
+                </div>
+            </div>
+        `;
+    } else if (caseData.flowType === 'emergency') {
+        flowInfoSection = `
+            <div class="info-card">
+                <h3>Emergency Information</h3>
+                <div class="info-item">
+                    <strong>Emergency Type:</strong> ${caseData.emergencyType || 'Not specified'}
+                </div>
+                <div class="info-item">
+                    <strong>Caller Name:</strong> ${caseData.callerName || 'Unknown'}
+                </div>
+                <div class="info-item">
+                    <strong>Caller Phone:</strong> ${caseData.callerPhone || 'Not provided'}
+                </div>
+                <div class="info-item">
+                    <strong>Contact Method:</strong> ${caseData.contactMethod || 'Unknown'}
+                </div>
+            </div>
+        `;
+        personInCrisisSection = `
+            <div class="info-card">
+                <h3>Person in Crisis Location</h3>
+                <div class="info-item">
+                    <strong>Location:</strong> ${caseData.personInCrisisLocation || 'Not provided'}
+                </div>
+                <div class="case-actions">
+                    <button class="btn btn-danger">🚨 Send Responder</button>
+                    <button class="btn btn-danger">📞 Call 911</button>
+                </div>
+            </div>
+        `;
+    } else if (caseData.flowType === 'known_person') {
+        flowInfoSection = `
+            <div class="info-card">
+                <h3>Caller Information</h3>
+                <div class="info-item">
+                    <strong>Name:</strong> ${caseData.callerName || 'Not provided'}
+                </div>
+                <div class="info-item">
+                    <strong>Phone:</strong> ${caseData.callerPhone || 'Not provided'}
+                </div>
+                <div class="info-item">
+                    <strong>Location:</strong> ${caseData.callerLocation || 'Not provided'}
+                </div>
+                <div class="info-item">
+                    <strong>Contact Method:</strong> ${caseData.contactMethod || 'Unknown'}
+                </div>
+                <div class="case-actions">
+                    <button class="btn btn-secondary">📞 Call Caller</button>
+                    <button class="btn btn-secondary">💬 SMS</button>
+                </div>
+            </div>
+        `;
+        personInCrisisSection = `
+            <div class="info-card">
+                <h3>Person in Crisis Information</h3>
+                <div class="info-item">
+                    <strong>Name:</strong> ${caseData.personInCrisisName || 'Not provided'}
+                </div>
+                <div class="info-item">
+                    <strong>Phone:</strong> ${caseData.personInCrisisPhone || 'Not provided'}
+                </div>
+                <div class="info-item">
+                    <strong>Location:</strong> ${caseData.personInCrisisLocation || 'Not provided'}
+                </div>
+                <div class="case-actions">
+                    <button class="btn btn-primary">📞 Call Person in Crisis</button>
+                    <button class="btn btn-secondary">💬 SMS</button>
+                </div>
+            </div>
+        `;
+    } else {
+        // For self flow - standard display
+        flowInfoSection = `
+            <div class="info-card">
+                <h3>Caller Information</h3>
+                <div class="info-item">
+                    <strong>Name:</strong> ${caseData.callerName || 'Not provided'}
+                </div>
+                <div class="info-item">
+                    <strong>Phone:</strong> ${caseData.callerPhone || 'Not provided'}
+                </div>
+                <div class="info-item">
+                    <strong>Location:</strong> ${caseData.callerLocation || 'Not provided'}
+                </div>
+                <div class="info-item">
+                    <strong>Contact Method:</strong> ${caseData.contactMethod || 'Unknown'}
+                </div>
+                <div class="case-actions">
+                    <button class="btn btn-secondary">📞 Call</button>
+                    <button class="btn btn-secondary">💬 SMS</button>
+                </div>
+            </div>
+        `;
+    }
+
     container.innerHTML = `
         <div class="case-detail-grid">
             <div class="case-info-section">
-                <div class="info-card">
-                    <h3>Caller Information</h3>
-                    <div class="info-item">
-                        <strong>Name:</strong> ${caseData.callerName || 'Not provided'}
-                    </div>
-                    <div class="info-item">
-                        <strong>Phone:</strong> ${caseData.callerPhone || 'Not provided'}
-                    </div>
-                    <div class="info-item">
-                        <strong>Location:</strong> ${caseData.callerLocation || 'Not provided'}
-                    </div>
-                    <div class="info-item">
-                        <strong>Contact Method:</strong> ${caseData.contactMethod || 'Unknown'}
-                    </div>
-                    <div class="case-actions">
-                        <button class="btn btn-secondary">📞 Call</button>
-                        <button class="btn btn-secondary">💬 SMS</button>
-                    </div>
-                </div>
+                ${flowInfoSection}
+                ${personInCrisisSection}
 
                 <div class="info-card">
                     <h3>Case Status</h3>
@@ -198,7 +310,7 @@ function closeCase(caseId) {
     dataManager.updateCase(caseId, { status: 'closed', closedAt: new Date().toISOString() });
     utils.showNotification('Case closed', 'success');
     setTimeout(() => {
-        window.location.href = 'cases.html';
+        window.location.href = 'dashboard.html';
     }, 1000);
 }
 

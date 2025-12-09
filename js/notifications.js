@@ -74,7 +74,7 @@ const notifications = {
                 message: 'Case CR-2024-100004 has been closed',
                 timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 hours ago
                 read: true,
-                link: 'cases.html'
+                link: 'dashboard.html'
             }
         ];
     },

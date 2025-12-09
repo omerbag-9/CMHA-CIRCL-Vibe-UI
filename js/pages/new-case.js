@@ -30,6 +30,23 @@ function setupForm() {
         firstSection.insertBefore(loadDummyBtn, firstSection.firstChild);
     }
 
+    // Flow selection event listeners
+    const flowRadios = document.querySelectorAll('input[name="flowType"]');
+    console.log('Found flow radios:', flowRadios.length);
+    flowRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            console.log('Flow radio changed to:', radio.value);
+            handleFlowSelection();
+        });
+    });
+
+    // Initialize flow display - ensure DOM is ready
+    console.log('Initializing flow display...');
+    setTimeout(() => {
+        console.log('Running initial handleFlowSelection');
+        handleFlowSelection();
+    }, 50);
+
     // Form submission
     if (form) {
         form.addEventListener('submit', (e) => {
@@ -45,13 +62,290 @@ function setupForm() {
         });
     }
 
-    // Auto-save draft every 30 seconds
-    setInterval(() => {
-        if (form) {
-            saveDraft(true); // Silent save
-        }
-    }, 30000);
+    // Emergency action buttons
+    const sendResponderBtn = document.getElementById('send-responder-btn');
+    const call911Btn = document.getElementById('call-911-btn');
+    
+    if (sendResponderBtn) {
+        sendResponderBtn.addEventListener('click', () => {
+            handleEmergencyAction('send_responder');
+        });
+    }
+    
+    if (call911Btn) {
+        call911Btn.addEventListener('click', () => {
+            handleEmergencyAction('call_911');
+        });
+    }
 }
+
+function handleFlowSelection() {
+    console.log('=== handleFlowSelection called ===');
+    const selectedFlow = document.querySelector('input[name="flowType"]:checked')?.value || 'for_self';
+    console.log('Flow selected:', selectedFlow);
+    
+    // Hide all flow-specific sections
+    const flowSections = document.querySelectorAll('.flow-specific');
+    flowSections.forEach(section => {
+        section.style.display = 'none';
+    });
+    
+    // Get form elements
+    const callerLocation = document.getElementById('caller-location');
+    const callerLocationLabel = callerLocation?.previousElementSibling;
+    const callerLocationGroup = document.getElementById('caller-location-group');
+    const assessmentQuestions = document.getElementById('assessment-questions');
+    const notesSection = document.getElementById('notes-section');
+    const contactMethodSection = document.getElementById('contact-method-section');
+    const crisisTypeSection = document.getElementById('crisis-type-section');
+    const caregiverFields = document.getElementById('caregiver-fields');
+    const emergencyFields = document.getElementById('emergency-fields');
+    const knownPersonFields = document.getElementById('known-person-fields');
+    const crisisTypeSelect = document.getElementById('crisis-type');
+    
+    console.log('Elements found:', {
+        callerLocationGroup: !!callerLocationGroup,
+        contactMethodSection: !!contactMethodSection,
+        crisisTypeSection: !!crisisTypeSection,
+        assessmentQuestions: !!assessmentQuestions,
+        notesSection: !!notesSection
+    });
+    
+    // Reset all sections visibility first
+    if (callerLocationGroup) {
+        callerLocationGroup.style.display = '';
+        callerLocationGroup.style.visibility = '';
+        callerLocationGroup.removeAttribute('hidden');
+    }
+    if (contactMethodSection) {
+        contactMethodSection.style.display = '';
+        contactMethodSection.style.visibility = '';
+        contactMethodSection.removeAttribute('hidden');
+    }
+    if (crisisTypeSection) {
+        crisisTypeSection.style.display = '';
+        crisisTypeSection.style.visibility = '';
+        crisisTypeSection.removeAttribute('hidden');
+    }
+    if (assessmentQuestions) {
+        assessmentQuestions.style.display = '';
+        assessmentQuestions.style.visibility = '';
+        assessmentQuestions.removeAttribute('hidden');
+    }
+    if (notesSection) {
+        notesSection.style.display = '';
+        notesSection.style.visibility = '';
+        notesSection.removeAttribute('hidden');
+    }
+    
+    // Reset crisis type to required
+    if (crisisTypeSelect) {
+        crisisTypeSelect.required = true;
+    }
+    
+    // Update required fields and labels based on flow
+    if (selectedFlow === 'for_self') {
+        // For self: caller location is person in crisis location
+        if (callerLocationLabel) {
+            callerLocationLabel.textContent = 'Location *';
+        }
+        if (callerLocation) {
+            callerLocation.required = true;
+        }
+        if (assessmentQuestions) {
+            assessmentQuestions.style.display = 'block';
+        }
+        // Show notes section
+        if (notesSection) {
+            notesSection.style.display = 'block';
+        }
+    } else if (selectedFlow === 'caregiver') {
+        // Caregiver: show caregiver fields and assessment questions
+        if (callerLocationLabel) {
+            callerLocationLabel.textContent = 'Your Location (Caregiver) *';
+        }
+        if (caregiverFields) {
+            caregiverFields.style.display = 'block';
+            // Make caregiver fields required
+            const personLocation = document.getElementById('person-in-crisis-location');
+            const relationship = document.getElementById('caregiver-relationship');
+            if (personLocation) personLocation.required = true;
+            if (relationship) relationship.required = true;
+        }
+        if (assessmentQuestions) {
+            assessmentQuestions.style.display = 'block';
+        }
+        // Show notes section
+        if (notesSection) {
+            notesSection.style.display = 'block';
+        }
+    } else if (selectedFlow === 'emergency') {
+        // Emergency: only caller name, phone, and location of person in crisis - nothing else
+        const callerName = document.getElementById('caller-name');
+        const callerPhone = document.getElementById('caller-phone');
+        
+        // Make caller name and phone required
+        if (callerName) callerName.required = true;
+        if (callerPhone) callerPhone.required = true;
+        
+        // Hide caller location
+        if (callerLocationGroup) {
+            callerLocationGroup.style.display = 'none';
+        }
+        if (callerLocation) {
+            callerLocation.required = false;
+        }
+        
+        // Hide contact method section
+        if (contactMethodSection) {
+            contactMethodSection.style.display = 'none';
+        }
+        
+        // Hide crisis type section and make it not required
+        if (crisisTypeSection) {
+            crisisTypeSection.style.display = 'none';
+            crisisTypeSection.style.visibility = 'hidden';
+            crisisTypeSection.setAttribute('hidden', 'true');
+            console.log('Hiding crisis type section for emergency');
+        }
+        if (crisisTypeSelect) {
+            crisisTypeSelect.required = false;
+        }
+        
+        // Hide assessment questions
+        if (assessmentQuestions) {
+            assessmentQuestions.style.display = 'none';
+            assessmentQuestions.style.visibility = 'hidden';
+            assessmentQuestions.setAttribute('hidden', 'true');
+            console.log('Hiding assessment questions for emergency');
+        }
+        
+        // Hide notes section
+        if (notesSection) {
+            notesSection.style.display = 'none';
+        }
+        
+        // Show emergency fields
+        if (emergencyFields) {
+            emergencyFields.style.display = 'block';
+        }
+    } else if (selectedFlow === 'known_person') {
+        // Known person: caller info (name, phone), person in crisis info (name, phone, location), and notes
+        
+        // Hide caller location
+        if (callerLocationGroup) {
+            callerLocationGroup.style.display = 'none';
+        }
+        if (callerLocation) {
+            callerLocation.required = false;
+        }
+        
+        // Hide contact method section
+        if (contactMethodSection) {
+            contactMethodSection.style.display = 'none';
+        }
+        
+        // Hide crisis type section and make it not required
+        if (crisisTypeSection) {
+            crisisTypeSection.style.display = 'none';
+            crisisTypeSection.style.visibility = 'hidden';
+            crisisTypeSection.setAttribute('hidden', 'true');
+            console.log('Hiding crisis type section for known person');
+        }
+        if (crisisTypeSelect) {
+            crisisTypeSelect.required = false;
+        }
+        
+        // Hide assessment questions
+        if (assessmentQuestions) {
+            assessmentQuestions.style.display = 'none';
+            assessmentQuestions.style.visibility = 'hidden';
+            assessmentQuestions.setAttribute('hidden', 'true');
+            console.log('Hiding assessment questions for known person');
+        }
+        
+        // Show person in crisis fields
+        if (knownPersonFields) {
+            knownPersonFields.style.display = 'block';
+            // Make person in crisis fields required
+            const personName = document.getElementById('person-in-crisis-name');
+            const personPhone = document.getElementById('person-in-crisis-phone');
+            const personLocation = document.getElementById('person-in-crisis-location-known');
+            if (personName) personName.required = true;
+            if (personPhone) personPhone.required = true;
+            if (personLocation) personLocation.required = true;
+        }
+        
+        // Show notes section
+        if (notesSection) {
+            notesSection.style.display = 'block';
+        }
+    }
+}
+
+function handleEmergencyAction(action) {
+    const form = document.getElementById('new-case-form');
+    const formData = new FormData(form);
+    
+    const location = formData.get('personInCrisisLocationEmergency');
+    
+    if (!location) {
+        utils.showNotification('Please fill in the location of person in crisis', 'error');
+        return;
+    }
+    
+    if (action === 'send_responder') {
+        // Create case immediately and assign responder
+        const caseData = {
+            flowType: 'emergency',
+            callerName: formData.get('callerName') || 'Unknown',
+            callerPhone: formData.get('callerPhone') || '',
+            callerLocation: formData.get('callerLocation') || '',
+            personInCrisisLocation: location,
+            emergencyType: 'suicide-risk',
+            isEmergency: true,
+            contactMethod: formData.get('contactMethod'),
+            crisisType: 'emergency',
+            urgency: 'emergency',
+            status: 'assigned_to_responder',
+            createdBy: auth.getCurrentUser()?.id || '1',
+            initialNotes: formData.get('initialNotes') || `Emergency action: Send Responder. Location: ${location}. Suicide risk.`
+        };
+        
+        const newCase = dataManager.createCase(caseData);
+        utils.showNotification(`Emergency case created. Responder dispatched to ${location}`, 'success');
+        
+        setTimeout(() => {
+            window.location.href = `case-detail.html?id=${newCase.id}`;
+        }, 1500);
+    } else if (action === 'call_911') {
+        // Create case and note 911 was called
+        const caseData = {
+            flowType: 'emergency',
+            callerName: formData.get('callerName') || 'Unknown',
+            callerPhone: formData.get('callerPhone') || '',
+            callerLocation: formData.get('callerLocation') || '',
+            personInCrisisLocation: location,
+            emergencyType: 'suicide-risk',
+            isEmergency: true,
+            contactMethod: formData.get('contactMethod'),
+            crisisType: 'emergency',
+            urgency: 'emergency',
+            status: 'assigned_to_responder',
+            createdBy: auth.getCurrentUser()?.id || '1',
+            initialNotes: formData.get('initialNotes') || `911 called. Location: ${location}. Suicide risk.`
+        };
+        
+        const newCase = dataManager.createCase(caseData);
+        utils.showNotification('911 has been notified. Case created.', 'success');
+        
+        setTimeout(() => {
+            window.location.href = `case-detail.html?id=${newCase.id}`;
+        }, 1500);
+    }
+}
+
+// Questions are now static in HTML - no dynamic generation needed
 
 // Load data from public request URL parameters
 function loadFromRequest() {
@@ -68,12 +362,25 @@ function loadFromRequest() {
     const isForSelf = urlParams.get('isForSelf') === 'true';
     const personInCrisisName = urlParams.get('personInCrisisName');
     
+    // Determine flow type
+    let flowType = 'for_self';
+    if (!isForSelf) {
+        // Default to known_person if person name is provided, otherwise could be caregiver
+        flowType = personInCrisisName ? 'known_person' : 'caregiver';
+    }
+    
+    // Set flow type radio button
+    const flowRadio = document.getElementById(`flow-${flowType}`);
+    if (flowRadio) {
+        flowRadio.checked = true;
+        handleFlowSelection();
+    }
+    
     // Pre-fill the form
     const callerNameInput = document.getElementById('caller-name');
     const callerPhoneInput = document.getElementById('caller-phone');
     const callerLocationInput = document.getElementById('caller-location');
     const initialNotesInput = document.getElementById('initial-notes');
-    const callerRelationshipSelect = document.getElementById('caller-relationship');
     const contactMethodWeb = document.querySelector('input[name="contactMethod"][value="web"]');
     
     if (name && callerNameInput) {
@@ -92,10 +399,16 @@ function loadFromRequest() {
         initialNotesInput.value = decodeURIComponent(message);
     }
     
-    // Set relationship if it's for someone else
-    if (!isForSelf && personInCrisisName && callerRelationshipSelect) {
-        // Try to set a default relationship, or leave it for dispatcher to fill
-        // The dispatcher will need to specify the exact relationship
+    // Pre-fill person in crisis fields if known person flow
+    if (flowType === 'known_person' && personInCrisisName) {
+        const personNameInput = document.getElementById('person-in-crisis-name');
+        const personLocationInput = document.getElementById('person-in-crisis-location-known');
+        if (personNameInput) {
+            personNameInput.value = decodeURIComponent(personInCrisisName);
+        }
+        if (personLocationInput && location) {
+            personLocationInput.value = decodeURIComponent(location);
+        }
     }
     
     // Set contact method to web
@@ -164,10 +477,14 @@ function createCase() {
         return;
     }
 
+    // Get flow type
+    const flowType = formData.get('flowType') || 'for_self';
+    
     // Check immediate danger
     const immediateDanger = formData.get('immediate-danger') === 'yes';
     
     const caseData = {
+        flowType: flowType,
         callerName: formData.get('callerName'),
         callerPhone: formData.get('callerPhone'),
         callerLocation: formData.get('callerLocation'),
@@ -179,6 +496,22 @@ function createCase() {
         createdBy: currentUser.id,
         status: immediateDanger ? 'assigned_to_responder' : 'new_case'
     };
+
+    // Add flow-specific fields
+    if (flowType === 'caregiver') {
+        caseData.caregiverName = formData.get('callerName');
+        caseData.caregiverPhone = formData.get('callerPhone');
+        caseData.personInCrisisLocation = formData.get('personInCrisisLocation');
+        caseData.caregiverRelationship = formData.get('caregiverRelationship');
+    } else if (flowType === 'emergency') {
+        caseData.personInCrisisLocation = formData.get('personInCrisisLocationEmergency');
+        caseData.emergencyType = formData.get('emergencyType');
+        caseData.isEmergency = true;
+    } else if (flowType === 'known_person') {
+        caseData.personInCrisisName = formData.get('personInCrisisName');
+        caseData.personInCrisisPhone = formData.get('personInCrisisPhone');
+        caseData.personInCrisisLocation = formData.get('personInCrisisLocationKnown');
+    }
 
     // Collect all assessment answers
     const assessmentData = {};
@@ -203,7 +536,7 @@ function createCase() {
         
         // Get text inputs and textareas
         assessmentSection.querySelectorAll('input[type="text"], textarea, select').forEach(input => {
-            if (input.value) {
+            if (input.value && input.name) {
                 assessmentData[input.name] = input.value;
             }
         });

@@ -2,6 +2,7 @@
 
 const chat = {
     currentConversation: null,
+    currentCaseId: null,
     conversations: [],
 
     // Initialize chat
@@ -130,11 +131,13 @@ const chat = {
         
         let userName = 'Unknown';
         let caseInfo = '';
+        let foundCaseId = null;
         
         // Check if it's a public user (person in crisis)
         if (userId.startsWith('public_')) {
             const caseMessage = messages.find(m => m.caseId);
             if (caseMessage) {
+                foundCaseId = caseMessage.caseId;
                 const caseData = dataManager.getCaseById(caseMessage.caseId);
                 if (caseData) {
                     userName = caseData.callerName || 'Person in Crisis';
@@ -143,7 +146,26 @@ const chat = {
                     userName = 'Person in Crisis';
                 }
             } else {
-                userName = 'Person in Crisis';
+                // Try to extract caseId from userId if it follows the pattern public_caseId
+                const match = userId.match(/^public_(.+)$/);
+                if (match && match[1]) {
+                    const possibleCaseId = match[1];
+                    const caseData = dataManager.getCaseById(possibleCaseId);
+                    if (caseData) {
+                        foundCaseId = possibleCaseId;
+                        userName = caseData.callerName || 'Person in Crisis';
+                        caseInfo = ` • ${caseData.caseId}`;
+                    } else {
+                        userName = 'Person in Crisis';
+                    }
+                } else {
+                    userName = 'Person in Crisis';
+                }
+            }
+            
+            // Update currentCaseId if we found one
+            if (foundCaseId) {
+                this.currentCaseId = foundCaseId;
             }
         } else {
             const user = dataManager.getUserById(userId);
@@ -223,6 +245,12 @@ const chat = {
             text: chatInput.value.trim(),
             type: 'text'
         };
+
+        // Add caseId if available (from URL parameter or stored)
+        if (this.currentCaseId) {
+            messageData.caseId = this.currentCaseId;
+            messageData.isPublic = this.currentConversation.startsWith('public_');
+        }
 
         dataManager.createMessage(messageData);
         chatInput.value = '';

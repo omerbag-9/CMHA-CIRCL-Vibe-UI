@@ -23,10 +23,6 @@
                         <span class="nav-icon">📊</span>
                         <span class="nav-text">Dashboard</span>
                     </a>
-                    <a href="cases.html" class="nav-item">
-                        <span class="nav-icon">📋</span>
-                        <span class="nav-text">All Cases</span>
-                    </a>
                     <a href="public-requests.html" class="nav-item">
                         <span class="nav-icon">🌐</span>
                         <span class="nav-text">Public Requests</span>
@@ -48,7 +44,7 @@
             <main class="main-content">
                 <header class="top-bar">
                     <div class="top-bar-left">
-                        <a href="cases.html" class="back-btn">← Back</a>
+                        <a href="dashboard.html" class="back-btn">← Back</a>
                         <h1>New Case</h1>
                     </div>
                     <div class="top-bar-right">
@@ -62,6 +58,27 @@
                 <div class="content-area">
                     <form id="new-case-form" class="case-form">
                         <div class="form-section">
+                            <h3>Case Type *</h3>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="flowType" value="for_self" id="flow-for-self" checked>
+                                    <span>For Self (Person in Crisis is the Caller)</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="flowType" value="caregiver" id="flow-caregiver">
+                                    <span>For Someone Else - Caregiver (Doctor, Friend, Family Member caring for person)</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="flowType" value="emergency" id="flow-emergency">
+                                    <span>For Someone Else - Emergency (Suicide risk, unknown person, only location available)</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="flowType" value="known_person" id="flow-known-person">
+                                    <span>For Someone Else - Known Person (Caller knows person in crisis and has their information)</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-section" id="contact-method-section">
                             <h3>Contact Method</h3>
                             <div class="radio-group">
                                 <label class="radio-label">
@@ -94,13 +111,71 @@
                                     <input type="tel" id="caller-phone" name="callerPhone" required>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" id="caller-location-group">
                                 <label for="caller-location">Location *</label>
                                 <input type="text" id="caller-location" name="callerLocation" required>
                                 <button type="button" class="btn-text">📍 Use Current Location</button>
                             </div>
                         </div>
-                        <div class="form-section">
+
+                        <!-- Caregiver Flow Fields -->
+                        <div class="form-section flow-specific" id="caregiver-fields" style="display: none;">
+                            <h3>Person in Crisis Information</h3>
+                            <div class="form-group">
+                                <label for="person-in-crisis-location">Person in Crisis Location *</label>
+                                <input type="text" id="person-in-crisis-location" name="personInCrisisLocation" placeholder="Location of the person in crisis">
+                            </div>
+                            <div class="form-group">
+                                <label for="caregiver-relationship">Caregiver Relationship *</label>
+                                <select id="caregiver-relationship" name="caregiverRelationship">
+                                    <option value="">Select relationship</option>
+                                    <option value="doctor">Doctor</option>
+                                    <option value="nurse">Nurse</option>
+                                    <option value="family-member">Family Member</option>
+                                    <option value="friend">Friend</option>
+                                    <option value="neighbor">Neighbor</option>
+                                    <option value="social-worker">Social Worker</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Emergency Flow Fields -->
+                        <div class="form-section flow-specific" id="emergency-fields" style="display: none;">
+                            <h3>Emergency Information</h3>
+                            <div class="form-group">
+                                <label for="person-in-crisis-location-emergency">Location of Person in Crisis (Suicide Risk) *</label>
+                                <input type="text" id="person-in-crisis-location-emergency" name="personInCrisisLocationEmergency" placeholder="Exact location where person in crisis is located" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Emergency Actions</label>
+                                <div class="button-group">
+                                    <button type="button" class="btn btn-primary" id="send-responder-btn">🚨 Send Responder</button>
+                                    <button type="button" class="btn btn-danger" id="call-911-btn">📞 Call 911</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Known Person Flow Fields -->
+                        <div class="form-section flow-specific" id="known-person-fields" style="display: none;">
+                            <h3>Person in Crisis Information</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="person-in-crisis-name">Person in Crisis Name *</label>
+                                    <input type="text" id="person-in-crisis-name" name="personInCrisisName" placeholder="Full name of person in crisis">
+                                </div>
+                                <div class="form-group">
+                                    <label for="person-in-crisis-phone">Person in Crisis Phone *</label>
+                                    <input type="tel" id="person-in-crisis-phone" name="personInCrisisPhone" placeholder="Phone number of person in crisis">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="person-in-crisis-location-known">Person in Crisis Location *</label>
+                                <input type="text" id="person-in-crisis-location-known" name="personInCrisisLocationKnown" placeholder="Location of person in crisis">
+                            </div>
+                        </div>
+
+                        <div class="form-section" id="crisis-type-section">
                             <h3>Crisis Type *</h3>
                             <select id="crisis-type" name="crisisType" required>
                                 <option value="">Select type</option>
@@ -228,7 +303,7 @@
                                         </label>
                                         <label class="checkbox-label">
                                             <input type="checkbox" name="substance-prescription" value="prescription">
-                                            <span>Prescription Medication</span>
+                                            <span>Prescription Medication (misuse)</span>
                                         </label>
                                         <label class="checkbox-label">
                                             <input type="checkbox" name="substance-none" value="none" checked>
@@ -238,19 +313,19 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="medications">Current medications?</label>
-                                    <input type="text" name="medications" id="medications" placeholder="e.g., Sertraline 50mg daily, Ativan PRN">
+                                    <input type="text" name="medications" id="medications" placeholder="List current medications">
                                 </div>
                                 <div class="form-group">
                                     <label for="diagnosis">Known mental health diagnosis?</label>
-                                    <input type="text" name="diagnosis" id="diagnosis" placeholder="e.g., Major Depressive Disorder, PTSD">
+                                    <input type="text" name="diagnosis" id="diagnosis" placeholder="e.g., Depression, Anxiety, Bipolar">
                                 </div>
                             </div>
 
                             <!-- Support Systems -->
                             <div class="question-category">
-                                <h4 class="category-title">👥 Support Systems</h4>
+                                <h4 class="category-title">🤝 Support Systems</h4>
                                 <div class="form-group">
-                                    <label for="has-support">Does the person have a support system?</label>
+                                    <label for="has-support">Does the person have support systems?</label>
                                     <div class="radio-group">
                                         <label class="radio-label">
                                             <input type="radio" name="has-support" value="yes" checked>
@@ -260,44 +335,32 @@
                                             <input type="radio" name="has-support" value="no">
                                             <span>No</span>
                                         </label>
-                                        <label class="radio-label">
-                                            <input type="radio" name="has-support" value="unknown">
-                                            <span>Unknown</span>
-                                        </label>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="support-people">Who is in their support network?</label>
+                                    <label>Support sources (check all that apply):</label>
                                     <div class="checkbox-group">
                                         <label class="checkbox-label">
                                             <input type="checkbox" name="support-family" value="family">
-                                            <span>Family Members</span>
+                                            <span>Family</span>
                                         </label>
                                         <label class="checkbox-label">
                                             <input type="checkbox" name="support-friends" value="friends">
                                             <span>Friends</span>
                                         </label>
                                         <label class="checkbox-label">
-                                            <input type="checkbox" name="support-counselor" value="counselor">
-                                            <span>Counselor/Therapist</span>
+                                            <input type="checkbox" name="support-professional" value="professional">
+                                            <span>Professional Support</span>
                                         </label>
                                         <label class="checkbox-label">
-                                            <input type="checkbox" name="support-doctor" value="doctor">
-                                            <span>Family Doctor</span>
-                                        </label>
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" name="support-caseworker" value="caseworker">
-                                            <span>Case Worker</span>
-                                        </label>
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" name="support-none" value="none">
-                                            <span>None</span>
+                                            <input type="checkbox" name="support-community" value="community">
+                                            <span>Community Resources</span>
                                         </label>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="emergency-contact">Emergency contact name and phone</label>
-                                    <input type="text" name="emergency-contact" id="emergency-contact" placeholder="Name: Phone Number">
+                                    <label for="emergency-contact">Emergency contact information:</label>
+                                    <input type="text" name="emergency-contact" id="emergency-contact" placeholder="Name and phone number">
                                 </div>
                             </div>
 
@@ -322,39 +385,27 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="risk-factors">Select all applicable risk factors:</label>
+                                    <label>Additional risk factors (check all that apply):</label>
                                     <div class="checkbox-group">
                                         <label class="checkbox-label">
                                             <input type="checkbox" name="risk-isolation" value="isolation">
                                             <span>Social Isolation</span>
                                         </label>
                                         <label class="checkbox-label">
-                                            <input type="checkbox" name="risk-homelessness" value="homelessness">
-                                            <span>Homelessness/Housing Instability</span>
-                                        </label>
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" name="risk-unemployment" value="unemployment">
-                                            <span>Unemployment</span>
-                                        </label>
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" name="risk-domestic-violence" value="domestic-violence">
-                                            <span>Domestic Violence</span>
-                                        </label>
-                                        <label class="checkbox-label">
                                             <input type="checkbox" name="risk-financial" value="financial">
-                                            <span>Financial Crisis</span>
+                                            <span>Financial Stress</span>
                                         </label>
                                         <label class="checkbox-label">
-                                            <input type="checkbox" name="risk-legal" value="legal">
-                                            <span>Legal Issues</span>
+                                            <input type="checkbox" name="risk-relationship" value="relationship">
+                                            <span>Relationship Issues</span>
                                         </label>
                                         <label class="checkbox-label">
-                                            <input type="checkbox" name="risk-grief" value="grief">
-                                            <span>Recent Loss/Grief</span>
+                                            <input type="checkbox" name="risk-job" value="job">
+                                            <span>Job Loss/Work Stress</span>
                                         </label>
                                         <label class="checkbox-label">
                                             <input type="checkbox" name="risk-none" value="none" checked>
-                                            <span>None Identified</span>
+                                            <span>None</span>
                                         </label>
                                     </div>
                                 </div>
@@ -364,7 +415,7 @@
                             <div class="question-category">
                                 <h4 class="category-title">📋 Previous History</h4>
                                 <div class="form-group">
-                                    <label for="repeat-caller">Has this person contacted CRCL before?</label>
+                                    <label for="repeat-caller">Is this a repeat caller?</label>
                                     <div class="radio-group">
                                         <label class="radio-label">
                                             <input type="radio" name="repeat-caller" value="yes">
@@ -407,7 +458,7 @@
                             <div class="question-category">
                                 <h4 class="category-title">📍 Current Situation</h4>
                                 <div class="form-group">
-                                    <label for="living-situation">Current living situation?</label>
+                                    <label for="living-situation">Living situation?</label>
                                     <div class="radio-group">
                                         <label class="radio-label">
                                             <input type="radio" name="living-situation" value="own-home" checked>
@@ -432,41 +483,8 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="trigger-event">What triggered this crisis? (if known)</label>
-                                    <textarea name="trigger-event" id="trigger-event" rows="3" placeholder="Describe the event or situation that led to this crisis call..."></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label for="immediate-needs">Immediate needs identified:</label>
-                                    <div class="checkbox-group">
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" name="need-safety" value="safety">
-                                            <span>Safety Planning</span>
-                                        </label>
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" name="need-housing" value="housing">
-                                            <span>Housing Support</span>
-                                        </label>
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" name="need-food" value="food">
-                                            <span>Food Security</span>
-                                        </label>
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" name="need-transport" value="transport">
-                                            <span>Transportation</span>
-                                        </label>
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" name="need-medical" value="medical">
-                                            <span>Medical Attention</span>
-                                        </label>
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" name="need-counseling" value="counseling">
-                                            <span>Counseling Services</span>
-                                        </label>
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" name="need-resources" value="resources">
-                                            <span>Resource Information</span>
-                                        </label>
-                                    </div>
+                                    <label for="trigger-event">What triggered this crisis?</label>
+                                    <textarea name="trigger-event" id="trigger-event" rows="3" placeholder="Describe the events or circumstances that led to this crisis..."></textarea>
                                 </div>
                             </div>
 
@@ -474,21 +492,25 @@
                             <div class="question-category">
                                 <h4 class="category-title">📝 Additional Information</h4>
                                 <div class="form-group">
-                                    <label for="caller-relationship">Relationship to person in crisis (if caller is not the person)</label>
-                                    <select name="caller-relationship" id="caller-relationship">
-                                        <option value="">Select relationship</option>
-                                        <option value="self">Self (Person in Crisis)</option>
-                                        <option value="family-member">Family Member</option>
-                                        <option value="friend">Friend</option>
-                                        <option value="neighbor">Neighbor</option>
-                                        <option value="healthcare-worker">Healthcare Worker</option>
-                                        <option value="police">Police Officer</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="cultural-considerations">Cultural or language considerations?</label>
-                                    <input type="text" name="cultural-considerations" id="cultural-considerations" placeholder="e.g., Requires interpreter, Cultural sensitivity needed">
+                                    <label>What does the person need? (check all that apply):</label>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="need-counseling" value="counseling">
+                                            <span>Counseling/Therapy</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="need-resources" value="resources">
+                                            <span>Resource Connection</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="need-medical" value="medical">
+                                            <span>Medical Attention</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="need-housing" value="housing">
+                                            <span>Housing Support</span>
+                                        </label>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="special-notes">Special notes or additional context</label>
@@ -496,12 +518,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-section">
+                        <div class="form-section" id="notes-section">
                             <h3>Dispatcher Notes</h3>
                             <textarea id="initial-notes" name="initialNotes" rows="5" placeholder="Add any additional notes, observations, or important information here..."></textarea>
                         </div>
                         <div class="form-actions">
-                            <a href="cases.html" class="btn btn-secondary">Cancel</a>
+                            <a href="dashboard.html" class="btn btn-secondary">Cancel</a>
                             <button type="button" class="btn btn-secondary" id="save-draft-btn">Save Draft</button>
                             <button type="submit" class="btn btn-primary">Create Case</button>
                         </div>
@@ -520,7 +542,7 @@
     <script src="../../js/navigation.js"></script>
     <script src="../../js/notifications.js"></script>
     <script src="../../js/app.js"></script>
-    <script src="../../js/pages/new-case.js"></script>
+    <script src="../../js/pages/new-case.js?v=3"></script>
 </body>
 </html>
 
