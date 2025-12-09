@@ -10,59 +10,104 @@
     <link rel="stylesheet" href="../../css/styles.css">
     <link rel="stylesheet" href="../../css/components.css">
     <link rel="stylesheet" href="../../css/utilities.css">
+    <link rel="stylesheet" href="../../css/mobile-frame.css">
 </head>
 <body>
-    <div id="app">
-        <div class="layout">
-            <aside class="sidebar">
-                <div class="sidebar-header">
-                    <h2>CRCL</h2>
-                </div>
-                <nav class="sidebar-nav">
-                    <a href="dashboard.html" class="nav-item active">
-                        <span class="nav-icon">📊</span>
-                        <span class="nav-text">Dashboard</span>
-                    </a>
-                    <a href="cases.html" class="nav-item">
-                        <span class="nav-icon">📋</span>
-                        <span class="nav-text">My Cases</span>
-                    </a>
-                    <a href="chat.html" class="nav-item">
-                        <span class="nav-icon">💬</span>
-                        <span class="nav-text">Messages</span>
-                    </a>
-                </nav>
-            </aside>
-            <main class="main-content">
-                <header class="top-bar">
-                    <div class="top-bar-left">
-                        <button class="menu-toggle">☰</button>
-                        <h1>Responder Dashboard</h1>
+    <div class="mobile-frame">
+        <div class="phone-device">
+            <div class="phone-screen">
+                <!-- Mobile Top Bar -->
+                <div class="mobile-top-bar">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h1 style="font-size: 22px; margin: 0; font-weight: 700;">Crisis Responder</h1>
+                            <div style="font-size: 13px; opacity: 0.9; margin-top: 6px; font-weight: 500;">
+                                <span class="status-indicator"></span>
+                                <span style="color: black;" id="responder-name">Responder</span>
+                            </div>
+                        </div>
+                        <button class="icon-btn" id="logout-btn" style="color: black; background: rgba(255,255,255,0.2); border: none; padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 600;">Logout</button>
                     </div>
-                    <div class="top-bar-right">
-                        <div class="user-menu">
-                            <span id="user-name">Responder</span>
-                            <button class="icon-btn" id="logout-btn">Logout</button>
+                </div>
+
+                <!-- Mobile Content -->
+                <div class="mobile-content">
+                    <!-- Statistics -->
+                    <div class="mobile-stats">
+                        <div class="mobile-stat-card">
+                            <div class="mobile-stat-value" id="active-count">0</div>
+                            <div class="mobile-stat-label">Active</div>
+                        </div>
+                        <div class="mobile-stat-card">
+                            <div class="mobile-stat-value" id="pending-count">0</div>
+                            <div class="mobile-stat-label">Pending</div>
+                        </div>
+                        <div class="mobile-stat-card">
+                            <div class="mobile-stat-value" id="completed-count">0</div>
+                            <div class="mobile-stat-label">Today</div>
                         </div>
                     </div>
-                </header>
-                <div class="content-area">
-                    <div class="info-card">
-                        <h3>Status</h3>
+
+                    <!-- Status Selector -->
+                    <div class="mobile-status-selector">
+                        <label style="font-size: 14px; font-weight: 600; color: #1a1a1a; display: block; margin-bottom: 8px;">Your Status</label>
                         <select id="responder-status">
                             <option value="available">Available</option>
                             <option value="busy">Busy</option>
                             <option value="offline">Offline</option>
                         </select>
                     </div>
-                    <div class="section">
-                        <h2>My Active Cases</h2>
-                        <div id="responder-cases" class="cases-list">
-                            <!-- Cases will be loaded here -->
+
+                    <!-- New Requests Section -->
+                    <div class="mobile-section">
+                        <div class="mobile-section-header">
+                            <h2 class="mobile-section-title">New Requests</h2>
+                            <span class="mobile-section-badge" id="new-requests-badge">0</span>
+                        </div>
+                        <div id="new-requests-list">
+                            <!-- New requests will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Active Cases Section -->
+                    <div class="mobile-section">
+                        <div class="mobile-section-header">
+                            <h2 class="mobile-section-title">Active Cases</h2>
+                            <span class="mobile-section-badge" id="active-cases-badge">0/3</span>
+                        </div>
+                        <div id="active-cases-list">
+                            <!-- Active cases will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Completed Cases Section -->
+                    <div class="mobile-section">
+                        <div class="mobile-section-header">
+                            <h2 class="mobile-section-title">Completed Today</h2>
+                            <span class="mobile-section-badge" id="completed-cases-badge">0</span>
+                        </div>
+                        <div id="completed-cases-list">
+                            <!-- Completed cases will be loaded here -->
                         </div>
                     </div>
                 </div>
-            </main>
+
+                <!-- Mobile Bottom Navigation -->
+                <div class="mobile-bottom-nav">
+                    <a href="dashboard.html" class="mobile-nav-item active">
+                        <span class="nav-icon">🏠</span>
+                        <span>Home</span>
+                    </a>
+                    <a href="cases.html" class="mobile-nav-item">
+                        <span class="nav-icon">📋</span>
+                        <span>My Cases</span>
+                    </a>
+                    <a href="chat.html" class="mobile-nav-item">
+                        <span class="nav-icon">💬</span>
+                        <span>Messages</span>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -71,8 +116,7 @@
     <script src="../../js/dummy-data.js"></script>
     <script src="../../js/init-data.js"></script>
     <script src="../../js/auth.js"></script>
-    <script src="../../js/cases.js"></script>
     <script src="../../js/app.js"></script>
+    <script src="../../js/pages/responder-dashboard.js"></script>
 </body>
 </html>
-

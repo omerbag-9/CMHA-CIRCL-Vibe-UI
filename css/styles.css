@@ -429,7 +429,7 @@ p {
 .icon-btn {
     background: none;
     border: none;
-    color: var(--white);
+    color: black;
     cursor: pointer;
     font-size: 20px;
     padding: 8px;

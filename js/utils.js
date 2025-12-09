@@ -79,6 +79,9 @@ const utils = {
         const badges = {
             'new_case': 'badge-new',
             'assigned_to_responder': 'badge-active',
+            'accepted_by_responder': 'badge-active',
+            'on_site': 'badge-urgent',
+            'responder_closed': 'badge-closed',
             'follow_up_scheduled': 'badge-urgent',
             'closed': 'badge-closed'
         };
@@ -90,6 +93,9 @@ const utils = {
         const statusTexts = {
             'new_case': 'New Case',
             'assigned_to_responder': 'Assigned to Responder',
+            'accepted_by_responder': 'Accepted by Responder',
+            'on_site': 'Responder On Site',
+            'responder_closed': 'Closed by Responder',
             'follow_up_scheduled': 'Follow-up Scheduled',
             'closed': 'Closed'
         };

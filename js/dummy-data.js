@@ -231,16 +231,17 @@ const dummyData = {
         
         const cases = [];
         const names = [
-            'John Smith', 'Sarah Johnson', 'Michael Chen', 'Emily Davis', 'David Wilson',
-            'Lisa Anderson', 'Robert Brown', 'Jennifer Martinez', 'James Taylor', 'Maria Garcia',
-            'William Lee', 'Patricia White', 'Richard Harris', 'Linda Clark', 'Joseph Lewis',
-            'Nancy Moore', 'Charles Taylor', 'Barbara Jackson', 'Daniel Martin', 'Susan Lee'
+            'Alex Thompson', 'Jordan Lee', 'Taylor Smith', 'Morgan Davis', 'Casey Wilson',
+            'Riley Brown', 'Jamie Chen', 'Drew Martinez', 'Cameron White', 'Robin Garcia',
+            'Avery Johnson', 'Quinn Anderson', 'Sage Miller', 'River Jones', 'Sky Williams',
+            'Phoenix Moore', 'Ocean Taylor', 'Storm Clark', 'Winter Lewis', 'Autumn Harris'
         ];
         const locations = [
-            '123 Main St, Vancouver, BC', '456 Oak Ave, Burnaby, BC', '789 Pine Rd, Surrey, BC',
-            '321 Elm St, Richmond, BC', '654 Maple Dr, Coquitlam, BC', '987 Cedar Ln, North Vancouver, BC',
-            '147 Spruce Way, New Westminster, BC', '258 Birch St, Port Moody, BC', '369 Willow Ave, Langley, BC',
-            '741 Oak Street, Vancouver, BC', '852 Maple Avenue, Burnaby, BC', '963 Pine Road, Surrey, BC'
+            '123 Main St, Vancouver, BC', '456 Oak Ave, Vancouver, BC', '789 Pine Rd, Vancouver, BC',
+            '321 Elm St, Vancouver, BC', '654 Maple Dr, Vancouver, BC', '987 Cedar Ln, Vancouver, BC',
+            '147 Spruce Way, Vancouver, BC', '258 Birch St, Vancouver, BC', '369 Willow Ave, Vancouver, BC',
+            '741 Oak Street, Vancouver, BC', '852 Maple Avenue, Vancouver, BC', '963 Pine Road, Vancouver, BC',
+            '159 Broadway St, Vancouver, BC', '357 Hastings Ave, Vancouver, BC', '753 Granville St, Vancouver, BC'
         ];
         const activeStatuses = ['assigned_to_responder'];
         const urgencies = ['normal', 'urgent', 'normal', 'urgent', 'normal'];
@@ -250,16 +251,23 @@ const dummyData = {
         const now = new Date();
         let caseIndex = 0;
         
-        // Assign 1-2 cases to each busy responder
+        // Assign cases in different statuses to demonstrate workflow
         busyResponders.forEach(responder => {
-            const numCases = Math.floor(Math.random() * 2) + 1; // 1 or 2 cases
+            const caseStatuses = [
+                { status: 'assigned_to_responder', count: 4 }, // Pending acceptance (including 1 emergency)
+                { status: 'accepted_by_responder', count: 2 }, // Accepted, not on site
+                { status: 'on_site', count: 1 }, // Currently on site
+                { status: 'responder_closed', count: 3 } // Closed today
+            ];
             
-            for (let i = 0; i < numCases; i++) {
-                const hoursAgo = Math.floor(Math.random() * 72); // Last 3 days
-                const createdAt = new Date(now.getTime() - hoursAgo * 60 * 60 * 1000);
-                const status = activeStatuses[Math.floor(Math.random() * activeStatuses.length)];
-                const urgency = urgencies[Math.floor(Math.random() * urgencies.length)];
-                const crisisType = crisisTypes[Math.floor(Math.random() * crisisTypes.length)];
+            caseStatuses.forEach(({ status, count }) => {
+                for (let i = 0; i < count; i++) {
+                    const hoursAgo = status === 'responder_closed' ? Math.floor(Math.random() * 8) : Math.floor(Math.random() * 48);
+                    const createdAt = new Date(now.getTime() - hoursAgo * 60 * 60 * 1000);
+                    // Make first pending case emergency, and occasionally add urgent cases
+                    const isEmergency = (i === 0 && status === 'assigned_to_responder') || (Math.random() > 0.8 && status === 'assigned_to_responder');
+                    const urgency = isEmergency ? 'emergency' : urgencies[Math.floor(Math.random() * urgencies.length)];
+                    const crisisType = isEmergency ? 'emergency' : crisisTypes[Math.floor(Math.random() * crisisTypes.length)];
                 
                 // Match location to responder's city when possible
                 let location = locations[Math.floor(Math.random() * locations.length)];
@@ -271,49 +279,143 @@ const dummyData = {
                     }
                 }
                 
-                const caseData = {
-                    id: `case-busy-${responder.id}-${i + 1}`,
-                    caseId: `CR-2024-${String(200000 + caseIndex).padStart(6, '0')}`,
-                    callerName: names[Math.floor(Math.random() * names.length)],
-                    callerPhone: `604-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`,
-                    callerLocation: location,
-                    contactMethod: contactMethods[Math.floor(Math.random() * contactMethods.length)],
-                    crisisType: crisisType,
-                    urgency: urgency,
-                    status: status,
-                    initialNotes: this.generateNotes(crisisType),
-                    createdBy: '1', // Dispatcher
-                    assignedTo: responder.id,
-                    assignedToName: responder.name,
-                    createdAt: createdAt.toISOString(),
-                    updatedAt: createdAt.toISOString(),
-                    assignedAt: new Date(createdAt.getTime() + Math.random() * 30 * 60 * 1000).toISOString(),
-                    timeline: [{
-                        action: 'Case Created',
-                        timestamp: createdAt.toISOString(),
-                        user: 'System'
-                    }, {
-                        action: `Assigned to ${responder.name}`,
-                        timestamp: new Date(createdAt.getTime() + Math.random() * 30 * 60 * 1000).toISOString(),
-                        user: 'John Dispatcher'
-                    }]
-                };
+                    const callerName = names[caseIndex % names.length];
+                    const callerLocation = locations[caseIndex % locations.length];
+                    
+                    const caseData = {
+                        id: `case-busy-${responder.id}-${caseIndex}`,
+                        caseId: `CR-2024-${String(200000 + caseIndex).padStart(6, '0')}`,
+                        flowType: 'for_self',
+                        callerName: callerName,
+                        callerPhone: `604-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`,
+                        callerLocation: callerLocation,
+                        contactMethod: contactMethods[Math.floor(Math.random() * contactMethods.length)],
+                        crisisType: crisisType,
+                        urgency: urgency,
+                        isEmergency: isEmergency,
+                        status: status,
+                        initialNotes: isEmergency ? 'EMERGENCY: Person in immediate crisis. Suicidal ideation reported. Requires urgent intervention.' : this.generateNotes(crisisType),
+                        createdBy: '1',
+                        assignedTo: responder.id,
+                        assignedToName: responder.name,
+                        createdAt: createdAt.toISOString(),
+                        updatedAt: createdAt.toISOString(),
+                        assignedAt: new Date(createdAt.getTime() + 5 * 60 * 1000).toISOString(),
+                        timeline: [
+                            {
+                                action: 'Case created',
+                                timestamp: createdAt.toISOString(),
+                                user: 'John Dispatcher'
+                            },
+                            {
+                                action: `Assigned to ${responder.name}`,
+                                timestamp: new Date(createdAt.getTime() + 5 * 60 * 1000).toISOString(),
+                                user: 'John Dispatcher'
+                            }
+                        ],
+                        notes: [],
+                        assessmentData: {
+                            'immediate-danger': isEmergency ? 'yes' : (Math.random() > 0.7 ? 'unknown' : 'no'),
+                            'suicidal-thoughts': isEmergency ? 'yes' : (Math.random() > 0.8 ? 'yes' : 'no'),
+                            'homicidal-thoughts': 'no',
+                            'weapons-involved': isEmergency && Math.random() > 0.7 ? 'unknown' : 'no',
+                            'current-state': isEmergency ? 'agitated' : ['anxious', 'depressed', 'stable', 'anxious'][i % 4],
+                            'has-support': Math.random() > 0.5 ? 'yes' : 'no',
+                            'previous-attempts': Math.random() > 0.8 ? 'yes' : 'no',
+                            'repeat-caller': Math.random() > 0.7 ? 'yes' : 'no'
+                        }
+                    };
                 
-                // Add follow-up for cases with follow_up_scheduled status
-                if (status === 'follow_up_scheduled') {
-                    const followupTime = new Date(createdAt.getTime() + (24 + Math.random() * 24) * 60 * 60 * 1000);
-                    caseData.followupScheduled = true;
-                    caseData.followupTime = followupTime.toISOString();
-                    caseData.timeline.push({
-                        action: 'Follow-up scheduled',
-                        timestamp: followupTime.toISOString(),
-                        user: 'John Dispatcher'
-                    });
+                    // Add status-specific data
+                    if (status === 'accepted_by_responder') {
+                        caseData.acceptedAt = new Date(createdAt.getTime() + 10 * 60 * 1000).toISOString();
+                        caseData.timeline.push({
+                            action: 'Accepted by responder',
+                            timestamp: caseData.acceptedAt,
+                            user: responder.name
+                        });
+                    } else if (status === 'on_site') {
+                        caseData.acceptedAt = new Date(createdAt.getTime() + 10 * 60 * 1000).toISOString();
+                        caseData.arrivedOnSiteAt = new Date(createdAt.getTime() + 30 * 60 * 1000).toISOString();
+                        caseData.timeline.push({
+                            action: 'Accepted by responder',
+                            timestamp: caseData.acceptedAt,
+                            user: responder.name
+                        });
+                        caseData.timeline.push({
+                            action: 'Responder arrived on site',
+                            timestamp: caseData.arrivedOnSiteAt,
+                            user: responder.name
+                        });
+                    } else if (status === 'responder_closed') {
+                        caseData.acceptedAt = new Date(createdAt.getTime() + 10 * 60 * 1000).toISOString();
+                        caseData.arrivedOnSiteAt = new Date(createdAt.getTime() + 30 * 60 * 1000).toISOString();
+                        caseData.closedAt = new Date(createdAt.getTime() + (60 + Math.random() * 90) * 60 * 1000).toISOString();
+                        caseData.closedBy = responder.id;
+                        caseData.closureOutcome = ['resolved', 'referred', 'escalated', 'other'][i % 4];
+                        caseData.timeOnSite = Math.floor(30 + Math.random() * 120); // 30-150 minutes
+                        caseData.followupScheduled = true;
+                        caseData.followupTime = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString();
+                        caseData.timeline.push({
+                            action: 'Accepted by responder',
+                            timestamp: caseData.acceptedAt,
+                            user: responder.name
+                        });
+                        caseData.timeline.push({
+                            action: 'Responder arrived on site',
+                            timestamp: caseData.arrivedOnSiteAt,
+                            user: responder.name
+                        });
+                        caseData.timeline.push({
+                            action: 'Case closed by responder',
+                            timestamp: caseData.closedAt,
+                            user: responder.name
+                        });
+                        caseData.timeline.push({
+                            action: '48-hour follow-up scheduled',
+                            timestamp: caseData.closedAt,
+                            user: 'System'
+                        });
+                        // Add varied closure notes based on outcome
+                        const closureNotes = {
+                            'resolved': [
+                                'Person was stabilized through crisis counseling. No immediate danger. Person agreed to safety plan and follow-up contact.',
+                                'Successfully de-escalated situation. Person is calm and has support network activated. Follow-up scheduled.',
+                                'Crisis intervention successful. Person connected with support person and agreed to ongoing mental health services.'
+                            ],
+                            'referred': [
+                                'Person referred to community mental health services. Appointment scheduled for tomorrow. Person is stable and willing to engage.',
+                                'Connected person with addiction services and housing support. Person is safe and has resources for next steps.',
+                                'Referred to psychiatric services for medication review. Person transported safely to clinic by family member.'
+                            ],
+                            'escalated': [
+                                'Person required immediate hospitalization due to suicide risk. Transported to emergency department via ambulance.',
+                                'Escalated to hospital due to severe mental health crisis. Person is now under medical care and supervision.',
+                                'Person agreed to voluntary hospitalization. Family notified. Person is safe in emergency psychiatric unit.'
+                            ],
+                            'other': [
+                                'Person declined further services but accepted resource information. Safety plan discussed. No immediate danger.',
+                                'Situation resolved with family support. Person has appointment with family doctor scheduled. Monitoring continues.',
+                                'Police assistance required due to property damage. Person was arrested but will receive mental health assessment.'
+                            ]
+                        };
+                        
+                        const notesList = closureNotes[caseData.closureOutcome] || closureNotes['resolved'];
+                        const selectedNote = notesList[i % notesList.length];
+                        
+                        caseData.notes.push({
+                            text: selectedNote,
+                            outcome: caseData.closureOutcome,
+                            timestamp: caseData.closedAt,
+                            type: 'closure',
+                            author: 'Responder'
+                        });
+                    }
+                    
+                    cases.push(caseData);
+                    caseIndex++;
                 }
-                
-                cases.push(caseData);
-                caseIndex++;
-            }
+            });
         });
         
         return cases;
@@ -323,7 +425,7 @@ const dummyData = {
     cleanOldStatuses() {
         try {
             const allCases = dataManager.getCases();
-            const validStatuses = ['new_case', 'assigned_to_responder', 'follow_up_scheduled', 'closed'];
+            const validStatuses = ['new_case', 'assigned_to_responder', 'accepted_by_responder', 'on_site', 'responder_closed', 'follow_up_scheduled', 'closed'];
             let updated = false;
             
             allCases.forEach(caseData => {
@@ -333,7 +435,7 @@ const dummyData = {
                     
                     if (['new', 'pending', 'pending_review'].includes(caseData.status)) {
                         newStatus = 'new_case';
-                    } else if (['assigned', 'responder_en_route', 'responder_on_site', 'in_progress', 'active'].includes(caseData.status)) {
+                    } else                     if (['assigned', 'responder_en_route', 'responder_on_site', 'in_progress', 'active', 'accepted', 'accepted_by_responder', 'on_site'].includes(caseData.status)) {
                         newStatus = 'assigned_to_responder';
                     } else if (['moved_to_followup', 'followup_scheduled'].includes(caseData.status)) {
                         newStatus = 'follow_up_scheduled';
@@ -490,15 +592,17 @@ const dummyData = {
                 existingCases = [];
             }
             
-            // Check if any cases have old statuses
-            const validStatuses = ['new_case', 'assigned_to_responder', 'follow_up_scheduled', 'closed'];
+            // Check if any cases have old statuses or if we need more responder cases
+            const validStatuses = ['new_case', 'assigned_to_responder', 'accepted_by_responder', 'on_site', 'responder_closed', 'follow_up_scheduled', 'closed'];
             const hasOldStatuses = existingCases.some(c => !validStatuses.includes(c.status));
+            const responderCases = existingCases.filter(c => c.assignedTo === '2'); // Sarah Responder
+            const needsMoreCases = responderCases.length < 10;
             
             // Check if we have public requests
             const hasPublicRequests = existingCases.some(c => c.isPublicCase === true);
             
-            // Regenerate all cases if there are none or if any have old statuses or no public requests
-            if (existingCases.length === 0 || hasOldStatuses || !hasPublicRequests) {
+            // Regenerate all cases if there are none or if any have old statuses or no public requests or need more responder cases
+            if (existingCases.length === 0 || hasOldStatuses || !hasPublicRequests || needsMoreCases) {
                 if (hasOldStatuses) {
                     console.log('🔄 Found cases with old statuses, regenerating all cases...');
                 }

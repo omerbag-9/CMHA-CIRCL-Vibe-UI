@@ -212,6 +212,161 @@ const dataManager = {
 
     getAvailableResponders() {
         return this.getResponders().filter(r => r.status === 'available');
+    },
+
+    // Responder Functions
+    getResponderActiveCases(responderId) {
+        const cases = this.getCases();
+        return cases.filter(c => 
+            c.assignedTo === responderId && 
+            ['assigned_to_responder', 'accepted_by_responder', 'on_site'].includes(c.status)
+        );
+    },
+
+    getResponderAcceptedCases(responderId) {
+        const cases = this.getCases();
+        return cases.filter(c => 
+            c.assignedTo === responderId && 
+            ['accepted_by_responder', 'on_site'].includes(c.status)
+        );
+    },
+
+    acceptCase(caseId, responderId) {
+        // Check 3-case limit
+        const acceptedCases = this.getResponderAcceptedCases(responderId);
+        if (acceptedCases.length >= 3) {
+            return { success: false, message: 'Cannot accept more than 3 cases at a time' };
+        }
+
+        const caseData = this.getCaseById(caseId);
+        if (!caseData) {
+            return { success: false, message: 'Case not found' };
+        }
+
+        if (caseData.assignedTo !== responderId) {
+            return { success: false, message: 'Case not assigned to you' };
+        }
+
+        this.updateCase(caseId, {
+            status: 'accepted_by_responder',
+            acceptedAt: new Date().toISOString(),
+            updatedBy: responderId
+        });
+
+        // Update responder status
+        const responder = this.getUserById(responderId);
+        if (responder && acceptedCases.length >= 2) {
+            this.updateUser(responderId, { status: 'busy' });
+        }
+
+        return { success: true, message: 'Case accepted successfully' };
+    },
+
+    declineCase(caseId, responderId, reason = '') {
+        const caseData = this.getCaseById(caseId);
+        if (!caseData) {
+            return { success: false, message: 'Case not found' };
+        }
+
+        this.updateCase(caseId, {
+            status: 'new_case',
+            assignedTo: null,
+            assignedToName: null,
+            assignedAt: null,
+            declinedBy: responderId,
+            declineReason: reason,
+            updatedBy: responderId
+        });
+
+        return { success: true, message: 'Case declined' };
+    },
+
+    arriveOnSite(caseId, responderId) {
+        const caseData = this.getCaseById(caseId);
+        if (!caseData) {
+            return { success: false, message: 'Case not found' };
+        }
+
+        if (caseData.assignedTo !== responderId) {
+            return { success: false, message: 'Case not assigned to you' };
+        }
+
+        this.updateCase(caseId, {
+            status: 'on_site',
+            arrivedOnSiteAt: new Date().toISOString(),
+            updatedBy: responderId
+        });
+
+        return { success: true, message: 'Status updated to On Site' };
+    },
+
+    closeCaseByResponder(caseId, outcome, notes, responderId) {
+        const caseData = this.getCaseById(caseId);
+        if (!caseData) {
+            return { success: false, message: 'Case not found' };
+        }
+
+        if (caseData.assignedTo !== responderId) {
+            return { success: false, message: 'Case not assigned to you' };
+        }
+
+        // Add closure note
+        const existingNotes = caseData.notes || [];
+        existingNotes.push({
+            text: notes,
+            outcome: outcome,
+            timestamp: new Date().toISOString(),
+            type: 'closure',
+            author: 'Responder'
+        });
+
+        // Calculate time on site
+        const arrivedTime = caseData.arrivedOnSiteAt ? new Date(caseData.arrivedOnSiteAt) : new Date();
+        const closedTime = new Date();
+        const timeOnSiteMinutes = Math.round((closedTime - arrivedTime) / 60000);
+
+        // Schedule 48-hour follow-up
+        const followupTime = new Date();
+        followupTime.setHours(followupTime.getHours() + 48);
+
+        this.updateCase(caseId, {
+            status: 'responder_closed',
+            closedAt: closedTime.toISOString(),
+            closedBy: responderId,
+            closureOutcome: outcome,
+            notes: existingNotes,
+            timeOnSite: timeOnSiteMinutes,
+            followupScheduled: true,
+            followupTime: followupTime.toISOString(),
+            updatedBy: responderId
+        });
+
+        // Update responder status to available if no more active cases
+        const remainingCases = this.getResponderAcceptedCases(responderId);
+        if (remainingCases.length === 0) {
+            this.updateUser(responderId, { status: 'available' });
+        }
+
+        return { 
+            success: true, 
+            message: 'Case closed successfully. 48-hour follow-up scheduled.',
+            followupTime: followupTime.toISOString()
+        };
+    },
+
+    // Update user (for responder status updates)
+    updateUser(userId, updates) {
+        const users = this.getUsers();
+        const index = users.findIndex(u => u.id === userId);
+        if (index !== -1) {
+            users[index] = {
+                ...users[index],
+                ...updates
+            };
+            localStorage.setItem('crcl_users', JSON.stringify(users));
+            return users[index];
+        }
+        return null;
     }
 };
 
