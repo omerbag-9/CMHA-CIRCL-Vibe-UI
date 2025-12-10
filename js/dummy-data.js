@@ -218,6 +218,270 @@ const dummyData = {
         return messages;
     },
 
+    // Generate cases specifically for the main test responder (Sarah Responder - id: '2')
+    generateTestResponderCases() {
+        const cases = [];
+        const responderId = '2';
+        const responderName = 'Sarah Responder';
+        const now = new Date();
+        
+        // More diverse caller names for testing
+        const names = [
+            'Alice Cooper', 'Benjamin Walsh', 'Catherine Reed', 'Derek Morrison',
+            'Elena Santos', 'Frank O\'Brien', 'Grace Kim', 'Henry Patel',
+            'Isabella Chen', 'Jack Thompson', 'Karen Mitchell', 'Leo Fernandez',
+            'Mia Johnson', 'Nathan Brooks', 'Olivia Cruz', 'Patrick Nguyen'
+        ];
+        
+        const locations = [
+            '100 Robson St, Vancouver, BC', '250 Granville St, Vancouver, BC',
+            '500 Burrard St, Vancouver, BC', '1200 Commercial Dr, Vancouver, BC',
+            '3500 Main St, Vancouver, BC', '4000 Cambie St, Vancouver, BC',
+            '555 Hastings St, Vancouver, BC', '888 Kingsway, Vancouver, BC',
+            '150 Broadway E, Vancouver, BC', '2100 W 4th Ave, Vancouver, BC',
+            '75 Terminal Ave, Vancouver, BC', '1100 Seymour St, Vancouver, BC'
+        ];
+        
+        let caseIndex = 0;
+        
+        // === PENDING CASES (assigned_to_responder) - Waiting for acceptance ===
+        const pendingCases = [
+            { name: names[0], location: locations[0], urgency: 'emergency', crisis: 'emergency', hoursAgo: 0.2, notes: 'URGENT: Person expressing suicidal ideation. Family member called. Person is alone at home and not responding to calls. Immediate intervention needed.' },
+            { name: names[1], location: locations[1], urgency: 'urgent', crisis: 'urgent', hoursAgo: 0.5, notes: 'Person experiencing severe anxiety attack at workplace. Co-workers concerned. Unable to leave the building.' },
+            { name: names[2], location: locations[2], urgency: 'urgent', crisis: 'urgent', hoursAgo: 1, notes: 'Elderly person showing signs of confusion and distress. Neighbor called. Person lives alone.' },
+            { name: names[3], location: locations[3], urgency: 'normal', crisis: 'routine', hoursAgo: 2, notes: 'Person requesting support for ongoing depression. Scheduled wellness check.' },
+            { name: names[4], location: locations[4], urgency: 'normal', crisis: 'routine', hoursAgo: 3, notes: 'Follow-up visit requested after recent hospital discharge. Person is stable but needs check-in.' },
+            { name: names[5], location: locations[5], urgency: 'normal', crisis: 'sensitive', hoursAgo: 4, notes: 'Confidential wellness check requested. Person recently experienced domestic violence. Handle with care.' }
+        ];
+        
+        pendingCases.forEach((pc, i) => {
+            const createdAt = new Date(now.getTime() - pc.hoursAgo * 60 * 60 * 1000);
+            const assignedAt = new Date(createdAt.getTime() + 5 * 60 * 1000);
+            
+            cases.push({
+                id: `case-sarah-pending-${i}`,
+                caseId: `CR-2024-${String(400000 + caseIndex).padStart(6, '0')}`,
+                flowType: 'for_self',
+                callerName: pc.name,
+                callerPhone: `604-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`,
+                callerLocation: pc.location,
+                contactMethod: ['phone', 'sms', 'web'][i % 3],
+                crisisType: pc.crisis,
+                urgency: pc.urgency,
+                isEmergency: pc.urgency === 'emergency',
+                status: 'assigned_to_responder',
+                initialNotes: pc.notes,
+                createdBy: '1',
+                assignedTo: responderId,
+                assignedToName: responderName,
+                createdAt: createdAt.toISOString(),
+                updatedAt: assignedAt.toISOString(),
+                assignedAt: assignedAt.toISOString(),
+                timeline: [
+                    { action: 'Case created', timestamp: createdAt.toISOString(), user: 'John Dispatcher' },
+                    { action: `Assigned to ${responderName}`, timestamp: assignedAt.toISOString(), user: 'John Dispatcher' }
+                ],
+                notes: [],
+                assessmentData: {
+                    'immediate-danger': pc.urgency === 'emergency' ? 'yes' : 'no',
+                    'suicidal-thoughts': pc.urgency === 'emergency' ? 'yes' : 'no',
+                    'homicidal-thoughts': 'no',
+                    'weapons-involved': 'no',
+                    'current-state': ['anxious', 'depressed', 'agitated', 'stable'][i % 4],
+                    'has-support': i % 2 === 0 ? 'yes' : 'no',
+                    'previous-attempts': i === 0 ? 'yes' : 'no',
+                    'repeat-caller': i === 4 ? 'yes' : 'no'
+                }
+            });
+            caseIndex++;
+        });
+        
+        // === ACCEPTED CASES (accepted_by_responder) - On the way ===
+        const acceptedCases = [
+            { name: names[6], location: locations[6], urgency: 'urgent', crisis: 'urgent', hoursAgo: 1.5, notes: 'Person in acute distress after relationship breakdown. Friend called for help. Currently safe but emotionally unstable.' },
+            { name: names[7], location: locations[7], urgency: 'normal', crisis: 'routine', hoursAgo: 2.5, notes: 'Scheduled welfare check for person with chronic mental health condition. Routine visit.' }
+        ];
+        
+        acceptedCases.forEach((ac, i) => {
+            const createdAt = new Date(now.getTime() - ac.hoursAgo * 60 * 60 * 1000);
+            const assignedAt = new Date(createdAt.getTime() + 5 * 60 * 1000);
+            const acceptedAt = new Date(createdAt.getTime() + 15 * 60 * 1000);
+            
+            cases.push({
+                id: `case-sarah-accepted-${i}`,
+                caseId: `CR-2024-${String(400000 + caseIndex).padStart(6, '0')}`,
+                flowType: 'for_self',
+                callerName: ac.name,
+                callerPhone: `604-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`,
+                callerLocation: ac.location,
+                contactMethod: 'phone',
+                crisisType: ac.crisis,
+                urgency: ac.urgency,
+                isEmergency: false,
+                status: 'accepted_by_responder',
+                initialNotes: ac.notes,
+                createdBy: '1',
+                assignedTo: responderId,
+                assignedToName: responderName,
+                createdAt: createdAt.toISOString(),
+                updatedAt: acceptedAt.toISOString(),
+                assignedAt: assignedAt.toISOString(),
+                acceptedAt: acceptedAt.toISOString(),
+                timeline: [
+                    { action: 'Case created', timestamp: createdAt.toISOString(), user: 'John Dispatcher' },
+                    { action: `Assigned to ${responderName}`, timestamp: assignedAt.toISOString(), user: 'John Dispatcher' },
+                    { action: 'Accepted by responder', timestamp: acceptedAt.toISOString(), user: responderName }
+                ],
+                notes: [],
+                assessmentData: {
+                    'immediate-danger': 'no',
+                    'suicidal-thoughts': ac.urgency === 'urgent' ? 'unknown' : 'no',
+                    'homicidal-thoughts': 'no',
+                    'weapons-involved': 'no',
+                    'current-state': ['anxious', 'depressed'][i % 2],
+                    'has-support': 'yes',
+                    'previous-attempts': 'no',
+                    'repeat-caller': 'no'
+                }
+            });
+            caseIndex++;
+        });
+        
+        // === ON-SITE CASES (on_site) - Currently with person ===
+        const onsiteCases = [
+            { name: names[8], location: locations[8], urgency: 'urgent', crisis: 'urgent', hoursAgo: 2, notes: 'Person found in distressed state by neighbor. Initial assessment in progress. Responder providing crisis counseling.' }
+        ];
+        
+        onsiteCases.forEach((oc, i) => {
+            const createdAt = new Date(now.getTime() - oc.hoursAgo * 60 * 60 * 1000);
+            const assignedAt = new Date(createdAt.getTime() + 5 * 60 * 1000);
+            const acceptedAt = new Date(createdAt.getTime() + 10 * 60 * 1000);
+            const arrivedAt = new Date(createdAt.getTime() + 35 * 60 * 1000);
+            
+            cases.push({
+                id: `case-sarah-onsite-${i}`,
+                caseId: `CR-2024-${String(400000 + caseIndex).padStart(6, '0')}`,
+                flowType: 'for_self',
+                callerName: oc.name,
+                callerPhone: `604-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`,
+                callerLocation: oc.location,
+                contactMethod: 'phone',
+                crisisType: oc.crisis,
+                urgency: oc.urgency,
+                isEmergency: false,
+                status: 'on_site',
+                initialNotes: oc.notes,
+                createdBy: '1',
+                assignedTo: responderId,
+                assignedToName: responderName,
+                createdAt: createdAt.toISOString(),
+                updatedAt: arrivedAt.toISOString(),
+                assignedAt: assignedAt.toISOString(),
+                acceptedAt: acceptedAt.toISOString(),
+                arrivedOnSiteAt: arrivedAt.toISOString(),
+                timeline: [
+                    { action: 'Case created', timestamp: createdAt.toISOString(), user: 'John Dispatcher' },
+                    { action: `Assigned to ${responderName}`, timestamp: assignedAt.toISOString(), user: 'John Dispatcher' },
+                    { action: 'Accepted by responder', timestamp: acceptedAt.toISOString(), user: responderName },
+                    { action: 'Responder arrived on site', timestamp: arrivedAt.toISOString(), user: responderName }
+                ],
+                notes: [{
+                    text: 'Initial contact made. Person is cooperative. Continuing assessment.',
+                    timestamp: new Date(arrivedAt.getTime() + 10 * 60 * 1000).toISOString(),
+                    type: 'update',
+                    author: 'Responder'
+                }],
+                assessmentData: {
+                    'immediate-danger': 'no',
+                    'suicidal-thoughts': 'no',
+                    'homicidal-thoughts': 'no',
+                    'weapons-involved': 'no',
+                    'current-state': 'anxious',
+                    'has-support': 'no',
+                    'previous-attempts': 'no',
+                    'repeat-caller': 'no'
+                }
+            });
+            caseIndex++;
+        });
+        
+        // === COMPLETED CASES (responder_closed) - Closed today ===
+        const completedCases = [
+            { name: names[9], location: locations[9], hoursAgo: 4, timeOnSite: 45, outcome: 'resolved', notes: 'Person stabilized through crisis counseling. Safety plan established. Person has support network and agreed to follow-up.' },
+            { name: names[10], location: locations[10], hoursAgo: 6, timeOnSite: 60, outcome: 'referred', notes: 'Connected person with community mental health services. Appointment scheduled for tomorrow. Person is stable and willing to engage.' },
+            { name: names[11], location: locations[11], hoursAgo: 8, timeOnSite: 90, outcome: 'escalated', notes: 'Person required hospitalization due to acute mental health crisis. Transported safely to Vancouver General Hospital emergency department.' },
+            { name: names[12], location: locations[0], hoursAgo: 10, timeOnSite: 35, outcome: 'resolved', notes: 'Wellness check completed. Person is doing well, just had temporary episode. Support person now present.' },
+            { name: names[13], location: locations[1], hoursAgo: 12, timeOnSite: 55, outcome: 'referred', notes: 'Person referred to addiction services. Agreed to attend intake appointment. Crisis averted, person is motivated for treatment.' }
+        ];
+        
+        completedCases.forEach((cc, i) => {
+            const createdAt = new Date(now.getTime() - cc.hoursAgo * 60 * 60 * 1000);
+            const assignedAt = new Date(createdAt.getTime() + 5 * 60 * 1000);
+            const acceptedAt = new Date(createdAt.getTime() + 10 * 60 * 1000);
+            const arrivedAt = new Date(createdAt.getTime() + 30 * 60 * 1000);
+            const closedAt = new Date(arrivedAt.getTime() + cc.timeOnSite * 60 * 1000);
+            const followupTime = new Date(closedAt.getTime() + 48 * 60 * 60 * 1000);
+            
+            cases.push({
+                id: `case-sarah-closed-${i}`,
+                caseId: `CR-2024-${String(400000 + caseIndex).padStart(6, '0')}`,
+                flowType: 'for_self',
+                callerName: cc.name,
+                callerPhone: `604-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`,
+                callerLocation: cc.location,
+                contactMethod: 'phone',
+                crisisType: 'routine',
+                urgency: 'normal',
+                isEmergency: false,
+                status: 'responder_closed',
+                initialNotes: 'Wellness check requested.',
+                createdBy: '1',
+                assignedTo: responderId,
+                assignedToName: responderName,
+                createdAt: createdAt.toISOString(),
+                updatedAt: closedAt.toISOString(),
+                assignedAt: assignedAt.toISOString(),
+                acceptedAt: acceptedAt.toISOString(),
+                arrivedOnSiteAt: arrivedAt.toISOString(),
+                closedAt: closedAt.toISOString(),
+                closedBy: responderId,
+                closureOutcome: cc.outcome,
+                timeOnSite: cc.timeOnSite,
+                followupScheduled: true,
+                followupTime: followupTime.toISOString(),
+                timeline: [
+                    { action: 'Case created', timestamp: createdAt.toISOString(), user: 'John Dispatcher' },
+                    { action: `Assigned to ${responderName}`, timestamp: assignedAt.toISOString(), user: 'John Dispatcher' },
+                    { action: 'Accepted by responder', timestamp: acceptedAt.toISOString(), user: responderName },
+                    { action: 'Responder arrived on site', timestamp: arrivedAt.toISOString(), user: responderName },
+                    { action: 'Case closed by responder', timestamp: closedAt.toISOString(), user: responderName },
+                    { action: '48-hour follow-up scheduled', timestamp: closedAt.toISOString(), user: 'System' }
+                ],
+                notes: [{
+                    text: cc.notes,
+                    outcome: cc.outcome,
+                    timestamp: closedAt.toISOString(),
+                    type: 'closure',
+                    author: 'Responder'
+                }],
+                assessmentData: {
+                    'immediate-danger': 'no',
+                    'suicidal-thoughts': 'no',
+                    'homicidal-thoughts': 'no',
+                    'weapons-involved': 'no',
+                    'current-state': 'stable',
+                    'has-support': 'yes',
+                    'previous-attempts': 'no',
+                    'repeat-caller': i === 0 ? 'yes' : 'no'
+                }
+            });
+            caseIndex++;
+        });
+        
+        console.log(`✅ Generated ${cases.length} test cases for Sarah Responder`);
+        return cases;
+    },
+
     // Assign cases to busy responders
     assignCasesToBusyResponders() {
         // Get all users to find busy responders
@@ -596,18 +860,24 @@ const dummyData = {
             const validStatuses = ['new_case', 'assigned_to_responder', 'accepted_by_responder', 'on_site', 'responder_closed', 'follow_up_scheduled', 'closed'];
             const hasOldStatuses = existingCases.some(c => !validStatuses.includes(c.status));
             const responderCases = existingCases.filter(c => c.assignedTo === '2'); // Sarah Responder
-            const needsMoreCases = responderCases.length < 10;
+            const needsMoreCases = responderCases.length < 14; // Now we generate 14 cases for Sarah
+            
+            // Check if we have the new test responder cases (they have id starting with 'case-sarah-')
+            const hasTestResponderCases = existingCases.some(c => c.id && c.id.startsWith('case-sarah-'));
             
             // Check if we have public requests
             const hasPublicRequests = existingCases.some(c => c.isPublicCase === true);
             
             // Regenerate all cases if there are none or if any have old statuses or no public requests or need more responder cases
-            if (existingCases.length === 0 || hasOldStatuses || !hasPublicRequests || needsMoreCases) {
+            if (existingCases.length === 0 || hasOldStatuses || !hasPublicRequests || needsMoreCases || !hasTestResponderCases) {
                 if (hasOldStatuses) {
                     console.log('🔄 Found cases with old statuses, regenerating all cases...');
                 }
                 if (!hasPublicRequests) {
                     console.log('🔄 No public requests found, generating...');
+                }
+                if (!hasTestResponderCases || needsMoreCases) {
+                    console.log('🔄 Adding test responder cases for Sarah Responder...');
                 }
                 
                 // First generate regular cases
@@ -616,17 +886,20 @@ const dummyData = {
                 // Then generate cases specifically for busy responders
                 const busyResponderCases = this.assignCasesToBusyResponders();
                 
+                // Generate test cases for Sarah Responder (main test account)
+                const testResponderCases = this.generateTestResponderCases();
+                
                 // Generate public requests
                 const publicRequests = this.generatePublicRequests();
                 
                 // Combine all cases
-                const allCases = [...regularCases, ...busyResponderCases, ...publicRequests];
+                const allCases = [...regularCases, ...busyResponderCases, ...testResponderCases, ...publicRequests];
                 
                 // Sort by creation date (newest first)
                 allCases.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 
                 localStorage.setItem('crcl_cases', JSON.stringify(allCases));
-                console.log(`✅ Generated ${regularCases.length} regular cases, ${busyResponderCases.length} cases for busy responders, and ${publicRequests.length} public requests`);
+                console.log(`✅ Generated ${regularCases.length} regular cases, ${busyResponderCases.length} cases for busy responders, ${testResponderCases.length} test responder cases, and ${publicRequests.length} public requests`);
             } else {
                 console.log(`ℹ️ ${existingCases.length} cases already exist with valid statuses, skipping dummy data generation`);
             }
