@@ -99,6 +99,33 @@ const chat = {
         this.renderConversations();
     },
 
+    // Get initials for avatar
+    getInitials(name) {
+        if (!name) return 'U';
+        const parts = name.trim().split(' ');
+        if (parts.length >= 2) {
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+        }
+        return name.substring(0, 2).toUpperCase();
+    },
+
+    // Format time for display
+    formatTime(timestamp) {
+        if (!timestamp) return '';
+        const date = new Date(timestamp);
+        const now = new Date();
+        const diff = now - date;
+        const minutes = Math.floor(diff / 60000);
+        const hours = Math.floor(diff / 3600000);
+        const days = Math.floor(diff / 86400000);
+
+        if (minutes < 1) return 'Just now';
+        if (minutes < 60) return `${minutes}m`;
+        if (hours < 24) return `${hours}h`;
+        if (days < 7) return `${days}d`;
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    },
+
     // Render conversations list
     renderConversations() {
         const container = document.getElementById('chat-contacts');
@@ -113,14 +140,24 @@ const chat = {
             return;
         }
 
-        container.innerHTML = this.conversations.map(conv => `
-            <div class="chat-contact ${conv.userId === this.currentConversation ? 'active' : ''}" 
-                 onclick="chat.openConversation('${conv.userId}')">
-                <div class="chat-contact-name">${conv.userName}</div>
-                <div class="chat-contact-preview">${conv.lastMessage || 'No messages'}</div>
-                ${conv.unread > 0 ? `<span class="badge badge-new">${conv.unread}</span>` : ''}
-            </div>
-        `).join('');
+        container.innerHTML = this.conversations.map(conv => {
+            const initials = this.getInitials(conv.userName.split(' • ')[0]);
+            const time = this.formatTime(conv.lastMessageTime);
+            return `
+                <div class="chat-contact ${conv.userId === this.currentConversation ? 'active' : ''}" 
+                     onclick="chat.openConversation('${conv.userId}')">
+                    <div class="chat-contact-avatar">${initials}</div>
+                    <div class="chat-contact-info">
+                        <div class="chat-contact-header">
+                            <div class="chat-contact-name">${conv.userName}</div>
+                            ${time ? `<div class="chat-contact-time">${time}</div>` : ''}
+                        </div>
+                        <div class="chat-contact-preview">${conv.lastMessage || 'No messages'}</div>
+                    </div>
+                    ${conv.unread > 0 ? `<span class="chat-contact-badge">${conv.unread}</span>` : ''}
+                </div>
+            `;
+        }).join('');
     },
 
     // Open conversation
@@ -174,10 +211,19 @@ const chat = {
             }
         }
 
-        // Update header
-        const header = document.getElementById('chat-header');
-        if (header) {
-            header.innerHTML = `<span>${userName}${caseInfo}</span>`;
+        // Update header with Zoho Mail style
+        const headerName = document.getElementById('chat-header-name');
+        const headerSubtitle = document.getElementById('chat-header-subtitle');
+        const headerAvatar = document.getElementById('chat-header-avatar');
+        
+        if (headerName) {
+            headerName.textContent = userName;
+        }
+        if (headerSubtitle) {
+            headerSubtitle.textContent = caseInfo ? caseInfo.replace(' • ', '') : 'Online';
+        }
+        if (headerAvatar) {
+            headerAvatar.textContent = this.getInitials(userName);
         }
 
         // Enable input
@@ -214,15 +260,27 @@ const chat = {
             return;
         }
 
+        let lastDate = null;
         container.innerHTML = messages.map(msg => {
             const isSent = msg.fromId === currentUserId;
             const sender = dataManager.getUserById(msg.fromId);
+            const msgDate = new Date(msg.timestamp);
+            const dateStr = msgDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            const showDateSeparator = dateStr !== lastDate;
+            lastDate = dateStr;
+            
+            const timeStr = msgDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
             
             return `
+                ${showDateSeparator ? `
+                    <div class="chat-date-separator">
+                        <span>${dateStr}</span>
+                    </div>
+                ` : ''}
                 <div class="chat-message ${isSent ? 'sent' : 'received'}">
-                    <div class="chat-message-header">${sender ? sender.name : 'Unknown'}</div>
-                    <div class="chat-message-text">${msg.text}</div>
-                    <div class="chat-message-time">${utils.formatDate(msg.timestamp)}</div>
+                    ${!isSent ? `<div class="chat-message-sender">${sender ? sender.name : 'Unknown'}</div>` : ''}
+                    <div class="chat-message-bubble">${msg.text}</div>
+                    <div class="chat-message-time">${timeStr}</div>
                 </div>
             `;
         }).join('');

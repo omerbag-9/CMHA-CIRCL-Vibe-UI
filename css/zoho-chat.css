@@ -1,0 +1,465 @@
+/* Zoho Mail Style Chat Interface */
+
+/* Chat Layout - Zoho Mail Style */
+.chat-layout {
+    display: flex;
+    height: calc(100vh - 64px);
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* Chat Sidebar - Zoho Mail Style */
+.chat-sidebar {
+    width: 280px;
+    background: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Search Bar - Clean & Minimal */
+.chat-search {
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #ffffff;
+}
+
+.chat-search input {
+    width: 100%;
+    padding: 10px 16px 10px 40px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    background: #f9fafb;
+    color: #111827;
+    transition: all 0.15s ease;
+    box-sizing: border-box;
+}
+
+.chat-search input:focus {
+    outline: none;
+    border-color: var(--primary-green);
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(0, 166, 81, 0.08);
+}
+
+.chat-search input::placeholder {
+    color: #9ca3af;
+}
+
+/* Search Icon */
+.chat-search {
+    position: relative;
+}
+
+.chat-search::after {
+    content: '';
+    position: absolute;
+    left: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Contacts List - Zoho Mail Style */
+.chat-contacts {
+    flex: 1;
+    overflow-y: auto;
+    background: #ffffff;
+}
+
+.chat-contacts::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-contacts::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-contacts::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+
+.chat-contacts::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* Contact Item - Clean Design */
+.chat-contact {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f3f4f6;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    background: #ffffff;
+}
+
+.chat-contact:hover {
+    background: #f9fafb;
+}
+
+.chat-contact.active {
+    background: #f0fdf4;
+    border-left: 3px solid var(--primary-green);
+}
+
+.chat-contact-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary-green);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.chat-contact-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.chat-contact-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.chat-contact-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #111827;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-contact-time {
+    font-size: 12px;
+    color: #6b7280;
+    white-space: nowrap;
+    margin-left: 8px;
+}
+
+.chat-contact-preview {
+    font-size: 13px;
+    color: #6b7280;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+}
+
+.chat-contact-badge {
+    background: var(--primary-green);
+    color: #ffffff;
+    border-radius: 10px;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 8px;
+    min-width: 18px;
+    text-align: center;
+}
+
+/* Chat Main Area - Zoho Mail Style */
+.chat-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+/* Chat Header - Clean & Minimal */
+.chat-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.chat-header-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.chat-header-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary-green);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.chat-header-details h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 2px 0;
+}
+
+.chat-header-details p {
+    font-size: 13px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.chat-header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.chat-header-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    transition: all 0.15s ease;
+}
+
+.chat-header-btn:hover {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+/* Messages Area - Zoho Mail Style */
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* Message - Clean Design */
+.chat-message {
+    display: flex;
+    flex-direction: column;
+    max-width: 70%;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chat-message.sent {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.chat-message.received {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.chat-message-bubble {
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    word-wrap: break-word;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.chat-message.sent .chat-message-bubble {
+    background: var(--primary-green);
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+}
+
+.chat-message.received .chat-message-bubble {
+    background: #ffffff;
+    color: #111827;
+    border: 1px solid #e5e7eb;
+    border-bottom-left-radius: 4px;
+}
+
+.chat-message-time {
+    font-size: 11px;
+    color: #9ca3af;
+    margin-top: 4px;
+    padding: 0 4px;
+}
+
+.chat-message-sender {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.chat-message.received .chat-message-sender {
+    color: var(--primary-green);
+}
+
+/* Empty State */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #9ca3af;
+    text-align: center;
+    padding: 40px;
+}
+
+.empty-state p {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Input Container - Zoho Mail Style */
+.chat-input-container {
+    padding: 16px 24px;
+    border-top: 1px solid #e5e7eb;
+    background: #ffffff;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.chat-input-container input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #ffffff;
+    color: #111827;
+    transition: all 0.15s ease;
+}
+
+.chat-input-container input:focus {
+    outline: none;
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 3px rgba(0, 166, 81, 0.08);
+}
+
+.chat-input-container input:disabled {
+    background: #f9fafb;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.chat-input-container input::placeholder {
+    color: #9ca3af;
+}
+
+.chat-input-container .btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.chat-input-container .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .chat-layout {
+        flex-direction: column;
+    }
+    
+    .chat-sidebar {
+        width: 100%;
+        height: 40%;
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .chat-main {
+        height: 60%;
+    }
+    
+    .chat-message {
+        max-width: 85%;
+    }
+}
+
+/* Date Separator */
+.chat-date-separator {
+    text-align: center;
+    margin: 24px 0;
+    position: relative;
+}
+
+.chat-date-separator::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: #e5e7eb;
+}
+
+.chat-date-separator span {
+    background: #fafafa;
+    padding: 0 12px;
+    font-size: 12px;
+    color: #9ca3af;
+    position: relative;
+}
+

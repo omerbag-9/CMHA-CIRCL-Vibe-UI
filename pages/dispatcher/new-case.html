@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="../../css/styles.css">
     <link rel="stylesheet" href="../../css/components.css">
     <link rel="stylesheet" href="../../css/utilities.css">
+    <link rel="stylesheet" href="../../css/topic-bar.css">
+    <link rel="stylesheet" href="../../css/topic-bar-enhanced.css">
+    <link rel="stylesheet" href="../../css/chat-bar.css">
 </head>
 <body>
     <div id="app">
@@ -35,10 +38,6 @@
                         <span class="nav-icon">📅</span>
                         <span class="nav-text">Follow-ups</span>
                     </a>
-                    <a href="chat.html" class="nav-item">
-                        <span class="nav-icon">💬</span>
-                        <span class="nav-text">Messages</span>
-                    </a>
                 </nav>
             </aside>
             <main class="main-content">
@@ -56,142 +55,207 @@
                     </div>
                 </header>
                 <div class="content-area">
+                    <!-- Topic Navigation Bar -->
+                    <div class="topic-bar" id="topic-bar">
+                        <button type="button" class="topic-tab active has-required" data-topic="case-type" onclick="showTopic('case-type')">
+                            <span class="topic-label">Case Type</span>
+                        </button>
+                        <button type="button" class="topic-tab has-required" data-topic="contact-method" onclick="showTopic('contact-method')">
+                            <span class="topic-label">Contact</span>
+                        </button>
+                        <button type="button" class="topic-tab has-required" data-topic="caller-info" onclick="showTopic('caller-info')">
+                            <span class="topic-label">Caller</span>
+                        </button>
+                        <button type="button" class="topic-tab" data-topic="person-crisis-info" onclick="showTopic('person-crisis-info')">
+                            <span class="topic-label">Person in Crisis</span>
+                        </button>
+                        <button type="button" class="topic-tab has-required" data-topic="crisis-type" onclick="showTopic('crisis-type')">
+                            <span class="topic-label">Crisis Type</span>
+                        </button>
+                        <button type="button" class="topic-tab has-required" data-topic="safety" onclick="showTopic('safety')">
+                            <span class="topic-label">Safety</span>
+                        </button>
+                        <button type="button" class="topic-tab" data-topic="mental-health" onclick="showTopic('mental-health')">
+                            <span class="topic-label">Mental Health</span>
+                        </button>
+                        <button type="button" class="topic-tab" data-topic="support" onclick="showTopic('support')">
+                            <span class="topic-label">Support</span>
+                        </button>
+                        <button type="button" class="topic-tab" data-topic="risk" onclick="showTopic('risk')">
+                            <span class="topic-label">Risk</span>
+                        </button>
+                        <button type="button" class="topic-tab" data-topic="situation" onclick="showTopic('situation')">
+                            <span class="topic-label">Situation</span>
+                        </button>
+                        <button type="button" class="topic-tab" data-topic="additional" onclick="showTopic('additional')">
+                            <span class="topic-label">Additional</span>
+                        </button>
+                        <button type="button" class="topic-tab" data-topic="notes" onclick="showTopic('notes')">
+                            <span class="topic-label">Notes</span>
+                        </button>
+                    </div>
+
                     <form id="new-case-form" class="case-form">
-                        <div class="form-section">
+                        <!-- Case Type Topic -->
+                        <div class="topic-section active" data-topic-section="case-type">
                             <h3>Case Type *</h3>
-                            <div class="radio-group">
-                                <label class="radio-label">
-                                    <input type="radio" name="flowType" value="for_self" id="flow-for-self" checked>
-                                    <span>For Self (Person in Crisis is the Caller)</span>
-                                </label>
-                                <label class="radio-label">
-                                    <input type="radio" name="flowType" value="caregiver" id="flow-caregiver">
-                                    <span>For Someone Else - Caregiver (Doctor, Friend, Family Member caring for person)</span>
-                                </label>
-                                <label class="radio-label">
-                                    <input type="radio" name="flowType" value="emergency" id="flow-emergency">
-                                    <span>For Someone Else - Emergency (Suicide risk, unknown person, only location available)</span>
-                                </label>
-                                <label class="radio-label">
-                                    <input type="radio" name="flowType" value="known_person" id="flow-known-person">
-                                    <span>For Someone Else - Known Person (Caller knows person in crisis and has their information)</span>
-                                </label>
+                            <div class="topic-content">
+                                <div class="radio-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="flowType" value="for_self" id="flow-for-self" checked>
+                                        <span>For Self (Person in Crisis is the Caller)</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="flowType" value="caregiver" id="flow-caregiver">
+                                        <span>For Someone Else - Caregiver (Doctor, Friend, Family Member caring for person)</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="flowType" value="emergency" id="flow-emergency">
+                                        <span>For Someone Else - Emergency (Suicide risk, unknown person, only location available)</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="flowType" value="known_person" id="flow-known-person">
+                                        <span>For Someone Else - Known Person (Caller knows person in crisis and has their information)</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-section" id="contact-method-section">
-                            <h3>Contact Method</h3>
-                            <div class="radio-group">
-                                <label class="radio-label">
-                                    <input type="radio" name="contactMethod" value="phone" checked>
-                                    <span>Phone Call</span>
-                                </label>
-                                <label class="radio-label">
-                                    <input type="radio" name="contactMethod" value="sms">
-                                    <span>SMS</span>
-                                </label>
-                                <label class="radio-label">
-                                    <input type="radio" name="contactMethod" value="web">
-                                    <span>Web Form</span>
-                                </label>
-                                <label class="radio-label">
-                                    <input type="radio" name="contactMethod" value="whatsapp">
-                                    <span>WhatsApp</span>
-                                </label>
+
+                        <!-- Contact Method Topic -->
+                        <div class="topic-section" data-topic-section="contact-method">
+                            <h3>Contact Method *</h3>
+                            <div class="topic-content">
+                                <div class="radio-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="contactMethod" value="phone" checked>
+                                        <span>Phone Call</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="contactMethod" value="sms">
+                                        <span>SMS</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="contactMethod" value="web">
+                                        <span>Web Form</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="contactMethod" value="whatsapp">
+                                        <span>WhatsApp</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-section">
+
+                        <!-- Caller Information Topic -->
+                        <div class="topic-section" data-topic-section="caller-info">
                             <h3>Caller Information</h3>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="caller-name">Name *</label>
-                                    <input type="text" id="caller-name" name="callerName" required>
+                            <div class="topic-content">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="caller-name">Name *</label>
+                                        <input type="text" id="caller-name" name="callerName" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="caller-phone">Phone Number *</label>
+                                        <input type="tel" id="caller-phone" name="callerPhone" required>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="caller-phone">Phone Number *</label>
-                                    <input type="tel" id="caller-phone" name="callerPhone" required>
+                                <div class="form-group" id="caller-location-group">
+                                    <label for="caller-location">Location *</label>
+                                    <input type="text" id="caller-location" name="callerLocation" required>
+                                    <button type="button" class="btn-text">📍 Use Current Location</button>
                                 </div>
-                            </div>
-                            <div class="form-group" id="caller-location-group">
-                                <label for="caller-location">Location *</label>
-                                <input type="text" id="caller-location" name="callerLocation" required>
-                                <button type="button" class="btn-text">📍 Use Current Location</button>
                             </div>
                         </div>
 
-                        <!-- Caregiver Flow Fields -->
-                        <div class="form-section flow-specific" id="caregiver-fields" style="display: none;">
+                        <!-- Person in Crisis Info Topic (for someone else flows) -->
+                        <div class="topic-section" data-topic-section="person-crisis-info">
                             <h3>Person in Crisis Information</h3>
-                            <div class="form-group">
-                                <label for="person-in-crisis-location">Person in Crisis Location *</label>
-                                <input type="text" id="person-in-crisis-location" name="personInCrisisLocation" placeholder="Location of the person in crisis">
-                            </div>
-                            <div class="form-group">
-                                <label for="caregiver-relationship">Caregiver Relationship *</label>
-                                <select id="caregiver-relationship" name="caregiverRelationship">
-                                    <option value="">Select relationship</option>
-                                    <option value="doctor">Doctor</option>
-                                    <option value="nurse">Nurse</option>
-                                    <option value="family-member">Family Member</option>
-                                    <option value="friend">Friend</option>
-                                    <option value="neighbor">Neighbor</option>
-                                    <option value="social-worker">Social Worker</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                        </div>
+                            <div class="topic-content">
+                                <!-- Caregiver Flow Fields -->
+                                <div class="flow-specific" id="caregiver-fields" style="display: none;">
+                                    <h4>Person in Crisis Information</h4>
+                                    <div class="form-group">
+                                        <label for="person-in-crisis-location">Person in Crisis Location *</label>
+                                        <input type="text" id="person-in-crisis-location" name="personInCrisisLocation" placeholder="Location of the person in crisis">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="caregiver-relationship">Caregiver Relationship *</label>
+                                        <select id="caregiver-relationship" name="caregiverRelationship">
+                                            <option value="">Select relationship</option>
+                                            <option value="doctor">Doctor</option>
+                                            <option value="nurse">Nurse</option>
+                                            <option value="family-member">Family Member</option>
+                                            <option value="friend">Friend</option>
+                                            <option value="neighbor">Neighbor</option>
+                                            <option value="social-worker">Social Worker</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
 
-                        <!-- Emergency Flow Fields -->
-                        <div class="form-section flow-specific" id="emergency-fields" style="display: none;">
-                            <h3>Emergency Information</h3>
-                            <div class="form-group">
-                                <label for="person-in-crisis-location-emergency">Location of Person in Crisis (Suicide Risk) *</label>
-                                <input type="text" id="person-in-crisis-location-emergency" name="personInCrisisLocationEmergency" placeholder="Exact location where person in crisis is located" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Emergency Actions</label>
-                                <div class="button-group">
-                                    <button type="button" class="btn btn-primary" id="send-responder-btn">🚨 Send Responder</button>
-                                    <button type="button" class="btn btn-danger" id="call-911-btn">📞 Call 911</button>
+                                <!-- Emergency Flow Fields -->
+                                <div class="flow-specific" id="emergency-fields" style="display: none;">
+                                    <h4>Emergency Information</h4>
+                                    <div class="form-group">
+                                        <label for="person-in-crisis-location-emergency">Location of Person in Crisis (Suicide Risk) *</label>
+                                        <input type="text" id="person-in-crisis-location-emergency" name="personInCrisisLocationEmergency" placeholder="Exact location where person in crisis is located" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Emergency Actions</label>
+                                        <div class="button-group">
+                                            <button type="button" class="btn btn-primary" id="send-responder-btn">🚨 Send Responder</button>
+                                            <button type="button" class="btn btn-danger" id="call-911-btn">📞 Call 911</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Known Person Flow Fields -->
+                                <div class="flow-specific" id="known-person-fields" style="display: none;">
+                                    <h4>Person in Crisis Information</h4>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="person-in-crisis-name">Person in Crisis Name *</label>
+                                            <input type="text" id="person-in-crisis-name" name="personInCrisisName" placeholder="Full name of person in crisis">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="person-in-crisis-phone">Person in Crisis Phone *</label>
+                                            <input type="tel" id="person-in-crisis-phone" name="personInCrisisPhone" placeholder="Phone number of person in crisis">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="person-in-crisis-location-known">Person in Crisis Location *</label>
+                                        <input type="text" id="person-in-crisis-location-known" name="personInCrisisLocationKnown" placeholder="Location of person in crisis">
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Known Person Flow Fields -->
-                        <div class="form-section flow-specific" id="known-person-fields" style="display: none;">
-                            <h3>Person in Crisis Information</h3>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="person-in-crisis-name">Person in Crisis Name *</label>
-                                    <input type="text" id="person-in-crisis-name" name="personInCrisisName" placeholder="Full name of person in crisis">
-                                </div>
-                                <div class="form-group">
-                                    <label for="person-in-crisis-phone">Person in Crisis Phone *</label>
-                                    <input type="tel" id="person-in-crisis-phone" name="personInCrisisPhone" placeholder="Phone number of person in crisis">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="person-in-crisis-location-known">Person in Crisis Location *</label>
-                                <input type="text" id="person-in-crisis-location-known" name="personInCrisisLocationKnown" placeholder="Location of person in crisis">
-                            </div>
-                        </div>
-
-                        <div class="form-section" id="crisis-type-section">
+                        <!-- Crisis Type Topic -->
+                        <div class="topic-section" data-topic-section="crisis-type">
                             <h3>Crisis Type *</h3>
-                            <select id="crisis-type" name="crisisType" required>
-                                <option value="">Select type</option>
-                                <option value="routine">Routine</option>
-                                <option value="urgent">Urgent</option>
-                                <option value="emergency">Emergency</option>
-                                <option value="sensitive">Sensitive</option>
-                            </select>
+                            <div class="topic-content">
+                                <div class="form-group">
+                                    <select id="crisis-type" name="crisisType" required>
+                                        <option value="">Select type</option>
+                                        <option value="routine">Routine</option>
+                                        <option value="urgent">Urgent</option>
+                                        <option value="emergency">Emergency</option>
+                                        <option value="sensitive">Sensitive</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-section" id="assessment-questions">
-                            <h3>Assessment Questions</h3>
-                            <p class="section-description">Please complete all relevant assessment categories below</p>
-                            
-                            <!-- Safety Assessment -->
-                            <div class="question-category">
-                                <h4 class="category-title">🛡️ Safety Assessment</h4>
+
+                        <!-- Safety Assessment Topic -->
+                        <div class="topic-section" data-topic-section="safety">
+                            <h3>Safety Assessment</h3>
+                            <div class="topic-content">
+                                <p class="section-description">Please complete all relevant assessment categories below</p>
+                                
+                                <!-- Safety Assessment -->
+                                <div class="question-category">
+                                <h4 class="category-title">Safety Assessment</h4>
                                 <div class="form-group">
                                     <label for="immediate-danger">Is there immediate danger to self or others? *</label>
                                     <div class="radio-group">
@@ -261,10 +325,15 @@
                                     </div>
                                 </div>
                             </div>
+                            </div>
+                        </div>
 
-                            <!-- Mental Health Status -->
-                            <div class="question-category">
-                                <h4 class="category-title">🧠 Mental Health Status</h4>
+                        <!-- Mental Health Topic -->
+                        <div class="topic-section" data-topic-section="mental-health">
+                            <h3>Mental Health Status</h3>
+                            <div class="topic-content">
+                                <div class="question-category">
+                                <h4 class="category-title">Mental Health Status</h4>
                                 <div class="form-group">
                                     <label for="current-state">Current mental state?</label>
                                     <div class="radio-group">
@@ -320,10 +389,14 @@
                                     <input type="text" name="diagnosis" id="diagnosis" placeholder="e.g., Depression, Anxiety, Bipolar">
                                 </div>
                             </div>
+                            </div>
+                        </div>
 
-                            <!-- Support Systems -->
-                            <div class="question-category">
-                                <h4 class="category-title">🤝 Support Systems</h4>
+                        <!-- Support Systems Topic -->
+                        <div class="topic-section" data-topic-section="support">
+                            <h3>Support Systems</h3>
+                            <div class="topic-content">
+                                <div class="question-category">
                                 <div class="form-group">
                                     <label for="has-support">Does the person have support systems?</label>
                                     <div class="radio-group">
@@ -363,10 +436,14 @@
                                     <input type="text" name="emergency-contact" id="emergency-contact" placeholder="Name and phone number">
                                 </div>
                             </div>
+                            </div>
+                        </div>
 
-                            <!-- Risk Factors -->
-                            <div class="question-category">
-                                <h4 class="category-title">⚠️ Risk Factors</h4>
+                        <!-- Risk Factors Topic -->
+                        <div class="topic-section" data-topic-section="risk">
+                            <h3>Risk Factors</h3>
+                            <div class="topic-content">
+                                <div class="question-category">
                                 <div class="form-group">
                                     <label for="previous-attempts">Previous suicide attempts?</label>
                                     <div class="radio-group">
@@ -409,11 +486,10 @@
                                         </label>
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- Previous History -->
-                            <div class="question-category">
-                                <h4 class="category-title">📋 Previous History</h4>
+                                
+                                <!-- Previous History -->
+                                <div class="question-category">
+                                <h4 class="category-title">Previous History</h4>
                                 <div class="form-group">
                                     <label for="repeat-caller">Is this a repeat caller?</label>
                                     <div class="radio-group">
@@ -453,75 +529,573 @@
                                     </div>
                                 </div>
                             </div>
+                            </div>
+                        </div>
 
-                            <!-- Current Situation -->
-                            <div class="question-category">
-                                <h4 class="category-title">📍 Current Situation</h4>
-                                <div class="form-group">
-                                    <label for="living-situation">Living situation?</label>
-                                    <div class="radio-group">
-                                        <label class="radio-label">
-                                            <input type="radio" name="living-situation" value="own-home" checked>
-                                            <span>Own Home</span>
-                                        </label>
-                                        <label class="radio-label">
-                                            <input type="radio" name="living-situation" value="rental">
-                                            <span>Rental</span>
-                                        </label>
-                                        <label class="radio-label">
-                                            <input type="radio" name="living-situation" value="shelter">
-                                            <span>Shelter</span>
-                                        </label>
-                                        <label class="radio-label">
-                                            <input type="radio" name="living-situation" value="homeless">
-                                            <span>Homeless</span>
-                                        </label>
-                                        <label class="radio-label">
-                                            <input type="radio" name="living-situation" value="other">
-                                            <span>Other</span>
-                                        </label>
+                        <!-- Current Situation Topic -->
+                        <div class="topic-section" data-topic-section="situation">
+                            <h3>Current Situation</h3>
+                            <div class="topic-content">
+                                <div class="question-category">
+                                    <h4 class="category-title">Living Situation</h4>
+                                    <div class="form-group">
+                                        <label for="living-situation">Current living situation?</label>
+                                        <div class="radio-group">
+                                            <label class="radio-label">
+                                                <input type="radio" name="living-situation" value="own-home" checked>
+                                                <span>Own Home</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="living-situation" value="rental">
+                                                <span>Rental</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="living-situation" value="shelter">
+                                                <span>Shelter</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="living-situation" value="homeless">
+                                                <span>Homeless</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="living-situation" value="transitional">
+                                                <span>Transitional Housing</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="living-situation" value="other">
+                                                <span>Other</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="housing-stability">Housing stability status?</label>
+                                        <div class="radio-group">
+                                            <label class="radio-label">
+                                                <input type="radio" name="housing-stability" value="stable">
+                                                <span>Stable</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="housing-stability" value="at-risk">
+                                                <span>At Risk of Losing Housing</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="housing-stability" value="unstable">
+                                                <span>Unstable</span>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="trigger-event">What triggered this crisis?</label>
-                                    <textarea name="trigger-event" id="trigger-event" rows="3" placeholder="Describe the events or circumstances that led to this crisis..."></textarea>
+
+                                <div class="question-category">
+                                    <h4 class="category-title">Crisis Triggers</h4>
+                                    <div class="form-group">
+                                        <label for="trigger-event">What triggered this crisis?</label>
+                                        <textarea name="trigger-event" id="trigger-event" rows="3" placeholder="Describe the events or circumstances that led to this crisis..."></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Primary stressors (check all that apply):</label>
+                                        <div class="checkbox-group">
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="stressor-financial" value="financial">
+                                                <span>Financial Problems</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="stressor-relationship" value="relationship">
+                                                <span>Relationship Issues</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="stressor-work" value="work">
+                                                <span>Work/Employment Issues</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="stressor-health" value="health">
+                                                <span>Health Problems</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="stressor-legal" value="legal">
+                                                <span>Legal Issues</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="stressor-grief" value="grief">
+                                                <span>Grief/Loss</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="stressor-substance" value="substance">
+                                                <span>Substance Use</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="stressor-other" value="other">
+                                                <span>Other</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="question-category">
+                                    <h4 class="category-title">Current Environment</h4>
+                                    <div class="form-group">
+                                        <label for="people-present">Who is currently with the person?</label>
+                                        <div class="radio-group">
+                                            <label class="radio-label">
+                                                <input type="radio" name="people-present" value="alone" checked>
+                                                <span>Alone</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="people-present" value="family">
+                                                <span>Family Members</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="people-present" value="friends">
+                                                <span>Friends</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="people-present" value="professionals">
+                                                <span>Medical/Professional Staff</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="people-present" value="unknown">
+                                                <span>Unknown</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="environment-safety">Is the current environment safe?</label>
+                                        <div class="radio-group">
+                                            <label class="radio-label">
+                                                <input type="radio" name="environment-safety" value="safe" checked>
+                                                <span>Yes, Safe</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="environment-safety" value="unsafe">
+                                                <span>No, Unsafe</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="environment-safety" value="unknown">
+                                                <span>Unknown</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="question-category">
+                                    <h4 class="category-title">Timeline & Duration</h4>
+                                    <div class="form-group">
+                                        <label for="crisis-duration">How long has this crisis been ongoing?</label>
+                                        <div class="radio-group">
+                                            <label class="radio-label">
+                                                <input type="radio" name="crisis-duration" value="hours">
+                                                <span>Hours (Less than 24 hours)</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="crisis-duration" value="days">
+                                                <span>Days (1-7 days)</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="crisis-duration" value="weeks">
+                                                <span>Weeks (1-4 weeks)</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="crisis-duration" value="months">
+                                                <span>Months (1+ months)</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="crisis-duration" value="unknown">
+                                                <span>Unknown</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="crisis-onset">When did the crisis begin?</label>
+                                        <input type="text" name="crisis-onset" id="crisis-onset" placeholder="e.g., This morning, Yesterday, Last week, Specific date">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="recent-changes">Recent significant changes or events:</label>
+                                        <textarea name="recent-changes" id="recent-changes" rows="3" placeholder="Describe any recent major life changes, losses, or events that may have contributed to this crisis..."></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="question-category">
+                                    <h4 class="category-title">Current Circumstances</h4>
+                                    <div class="form-group">
+                                        <label for="employment-status">Employment status:</label>
+                                        <div class="radio-group">
+                                            <label class="radio-label">
+                                                <input type="radio" name="employment-status" value="employed">
+                                                <span>Employed</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="employment-status" value="unemployed">
+                                                <span>Unemployed</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="employment-status" value="student">
+                                                <span>Student</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="employment-status" value="retired">
+                                                <span>Retired</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="employment-status" value="disabled">
+                                                <span>Disabled</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="employment-status" value="unknown">
+                                                <span>Unknown</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="financial-situation">Current financial situation:</label>
+                                        <div class="radio-group">
+                                            <label class="radio-label">
+                                                <input type="radio" name="financial-situation" value="stable">
+                                                <span>Stable</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="financial-situation" value="struggling">
+                                                <span>Struggling</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="financial-situation" value="crisis">
+                                                <span>In Financial Crisis</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="financial-situation" value="unknown">
+                                                <span>Unknown</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="current-medical-issues">Current medical issues or concerns:</label>
+                                        <textarea name="current-medical-issues" id="current-medical-issues" rows="2" placeholder="Note any current medical conditions, medications, or health concerns..."></textarea>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- Additional Information -->
-                            <div class="question-category">
-                                <h4 class="category-title">📝 Additional Information</h4>
-                                <div class="form-group">
-                                    <label>What does the person need? (check all that apply):</label>
-                                    <div class="checkbox-group">
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" name="need-counseling" value="counseling">
-                                            <span>Counseling/Therapy</span>
-                                        </label>
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" name="need-resources" value="resources">
-                                            <span>Resource Connection</span>
-                                        </label>
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" name="need-medical" value="medical">
-                                            <span>Medical Attention</span>
-                                        </label>
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" name="need-housing" value="housing">
-                                            <span>Housing Support</span>
-                                        </label>
+                        <!-- Additional Information Topic -->
+                        <div class="topic-section" data-topic-section="additional">
+                            <h3>Additional Information</h3>
+                            <div class="topic-content">
+                                <div class="question-category">
+                                    <h4 class="category-title">Service Needs</h4>
+                                    <div class="form-group">
+                                        <label>What does the person need? (check all that apply):</label>
+                                        <div class="checkbox-group">
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="need-counseling" value="counseling">
+                                                <span>Counseling/Therapy</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="need-resources" value="resources">
+                                                <span>Resource Connection</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="need-medical" value="medical">
+                                                <span>Medical Attention</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="need-housing" value="housing">
+                                                <span>Housing Support</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="need-employment" value="employment">
+                                                <span>Employment Assistance</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="need-legal" value="legal">
+                                                <span>Legal Assistance</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="need-substance" value="substance">
+                                                <span>Substance Use Treatment</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="need-food" value="food">
+                                                <span>Food Security</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="need-transportation" value="transportation">
+                                                <span>Transportation</span>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
+
+                                <div class="question-category">
+                                    <h4 class="category-title">Additional Context</h4>
+                                    <div class="form-group">
+                                        <label for="cultural-considerations">Cultural or language considerations:</label>
+                                        <input type="text" name="cultural-considerations" id="cultural-considerations" placeholder="e.g., Preferred language, cultural background, religious considerations">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="accessibility-needs">Accessibility needs or accommodations:</label>
+                                        <input type="text" name="accessibility-needs" id="accessibility-needs" placeholder="e.g., Mobility aids, hearing/vision needs, communication preferences">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="previous-services">Previous services accessed:</label>
+                                        <textarea name="previous-services" id="previous-services" rows="2" placeholder="List any previous mental health services, crisis interventions, or support programs the person has used..."></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="question-category">
+                                    <h4 class="category-title">Communication Preferences</h4>
+                                    <div class="form-group">
+                                        <label for="preferred-contact-method">Preferred method of contact:</label>
+                                        <div class="radio-group">
+                                            <label class="radio-label">
+                                                <input type="radio" name="preferred-contact-method" value="phone" checked>
+                                                <span>Phone Call</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="preferred-contact-method" value="sms">
+                                                <span>SMS/Text</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="preferred-contact-method" value="email">
+                                                <span>Email</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="preferred-contact-method" value="in-person">
+                                                <span>In-Person</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="best-time-contact">Best time to contact:</label>
+                                        <div class="checkbox-group">
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="contact-time-morning" value="morning">
+                                                <span>Morning (8am-12pm)</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="contact-time-afternoon" value="afternoon">
+                                                <span>Afternoon (12pm-5pm)</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="contact-time-evening" value="evening">
+                                                <span>Evening (5pm-9pm)</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="question-category">
+                                    <h4 class="category-title">Demographics & Background</h4>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="age-range">Age range:</label>
+                                            <select name="age-range" id="age-range">
+                                                <option value="">Select age range</option>
+                                                <option value="0-17">0-17 (Minor)</option>
+                                                <option value="18-24">18-24</option>
+                                                <option value="25-34">25-34</option>
+                                                <option value="35-44">35-44</option>
+                                                <option value="45-54">45-54</option>
+                                                <option value="55-64">55-64</option>
+                                                <option value="65+">65+</option>
+                                                <option value="unknown">Unknown</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="gender">Gender:</label>
+                                            <select name="gender" id="gender">
+                                                <option value="">Select gender</option>
+                                                <option value="male">Male</option>
+                                                <option value="female">Female</option>
+                                                <option value="non-binary">Non-binary</option>
+                                                <option value="transgender">Transgender</option>
+                                                <option value="prefer-not-to-say">Prefer not to say</option>
+                                                <option value="unknown">Unknown</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ethnicity">Ethnicity/Cultural background:</label>
+                                        <input type="text" name="ethnicity" id="ethnicity" placeholder="Optional: Ethnicity or cultural background">
+                                    </div>
+                                </div>
+
+                                <div class="question-category">
+                                    <h4 class="category-title">Insurance & Coverage</h4>
+                                    <div class="form-group">
+                                        <label for="insurance-status">Insurance status:</label>
+                                        <div class="radio-group">
+                                            <label class="radio-label">
+                                                <input type="radio" name="insurance-status" value="insured">
+                                                <span>Insured</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="insurance-status" value="uninsured">
+                                                <span>Uninsured</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="insurance-status" value="unknown">
+                                                <span>Unknown</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="insurance-details">Insurance details (if applicable):</label>
+                                        <input type="text" name="insurance-details" id="insurance-details" placeholder="Insurance provider, policy number, or coverage type">
+                                    </div>
+                                </div>
+
+                                <div class="question-category">
+                                    <h4 class="category-title">Referral & Source Information</h4>
+                                    <div class="form-group">
+                                        <label for="referral-source">How did this case come to your attention?</label>
+                                        <div class="radio-group">
+                                            <label class="radio-label">
+                                                <input type="radio" name="referral-source" value="self">
+                                                <span>Self-Referral</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="referral-source" value="family">
+                                                <span>Family Member</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="referral-source" value="friend">
+                                                <span>Friend</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="referral-source" value="healthcare">
+                                                <span>Healthcare Provider</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="referral-source" value="police">
+                                                <span>Police/Emergency Services</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="referral-source" value="social-services">
+                                                <span>Social Services</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="referral-source" value="other">
+                                                <span>Other</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="referral-details">Referral source details:</label>
+                                        <textarea name="referral-details" id="referral-details" rows="2" placeholder="Additional information about how the case was referred or who made the initial contact..."></textarea>
+                                    </div>
+                                </div>
+
                                 <div class="form-group">
                                     <label for="special-notes">Special notes or additional context</label>
-                                    <textarea name="special-notes" id="special-notes" rows="4" placeholder="Any additional information that would be helpful for responders..."></textarea>
+                                    <textarea name="special-notes" id="special-notes" rows="4" placeholder="Any additional information that would be helpful for responders, including behavioral observations, communication style, or specific concerns..."></textarea>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-section" id="notes-section">
+
+                        <!-- Dispatcher Notes Topic -->
+                        <div class="topic-section" data-topic-section="notes">
                             <h3>Dispatcher Notes</h3>
-                            <textarea id="initial-notes" name="initialNotes" rows="5" placeholder="Add any additional notes, observations, or important information here..."></textarea>
+                            <div class="topic-content">
+                                <div class="question-category">
+                                    <h4 class="category-title">Case Summary</h4>
+                                    <div class="form-group">
+                                        <label for="case-summary">Brief case summary:</label>
+                                        <textarea id="case-summary" name="caseSummary" rows="3" placeholder="Provide a concise summary of the case, key concerns, and immediate needs..."></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="question-category">
+                                    <h4 class="category-title">Observations</h4>
+                                    <div class="form-group">
+                                        <label for="caller-presentation">Caller's presentation and demeanor:</label>
+                                        <textarea id="caller-presentation" name="callerPresentation" rows="2" placeholder="Describe how the caller presented during the conversation (calm, agitated, tearful, etc.)..."></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="person-presentation">Person in crisis presentation (if observed):</label>
+                                        <textarea id="person-presentation" name="personPresentation" rows="2" placeholder="If you observed or spoke with the person in crisis, describe their presentation..."></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="question-category">
+                                    <h4 class="category-title">Important Information</h4>
+                                    <div class="form-group">
+                                        <label for="safety-concerns">Safety concerns or red flags:</label>
+                                        <textarea id="safety-concerns" name="safetyConcerns" rows="2" placeholder="Note any specific safety concerns, red flags, or warning signs observed..."></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="responder-notes">Notes for responder:</label>
+                                        <textarea id="responder-notes" name="responderNotes" rows="3" placeholder="Any specific instructions, warnings, or important information for the assigned responder..."></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="question-category">
+                                    <h4 class="category-title">Action Items & Follow-up</h4>
+                                    <div class="form-group">
+                                        <label for="immediate-actions">Immediate actions taken:</label>
+                                        <textarea id="immediate-actions" name="immediateActions" rows="2" placeholder="List any immediate actions that have been taken (e.g., safety plan created, resources provided, emergency services contacted)..."></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="follow-up-needed">Follow-up actions needed:</label>
+                                        <textarea id="follow-up-needed" name="followUpNeeded" rows="2" placeholder="List any follow-up actions that need to be taken by the responder or other team members..."></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="next-steps">Recommended next steps:</label>
+                                        <textarea id="next-steps" name="nextSteps" rows="2" placeholder="Recommendations for next steps in the case management process..."></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="question-category">
+                                    <h4 class="category-title">Timeline & Key Events</h4>
+                                    <div class="form-group">
+                                        <label for="case-timeline">Case timeline (key events and chronology):</label>
+                                        <textarea id="case-timeline" name="caseTimeline" rows="3" placeholder="Document the sequence of events leading up to and during this crisis, including dates and times if known..."></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="key-quotes">Key quotes or statements:</label>
+                                        <textarea id="key-quotes" name="keyQuotes" rows="2" placeholder="Document any significant quotes or statements made by the caller or person in crisis..."></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="question-category">
+                                    <h4 class="category-title">Coordination & Communication</h4>
+                                    <div class="form-group">
+                                        <label for="other-agencies">Other agencies or services involved:</label>
+                                        <textarea id="other-agencies" name="otherAgencies" rows="2" placeholder="List any other agencies, services, or professionals that are or should be involved in this case..."></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="family-notification">Family notification status:</label>
+                                        <div class="radio-group">
+                                            <label class="radio-label">
+                                                <input type="radio" name="family-notification" value="notified">
+                                                <span>Family Notified</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="family-notification" value="not-notified">
+                                                <span>Family Not Notified</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="family-notification" value="not-applicable">
+                                                <span>Not Applicable</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="family-notification" value="unknown">
+                                                <span>Unknown</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="family-notification-details">Family notification details:</label>
+                                        <textarea id="family-notification-details" name="familyNotificationDetails" rows="2" placeholder="If family was notified, provide details about who was contacted and when..."></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="initial-notes">Additional dispatcher notes:</label>
+                                    <textarea id="initial-notes" name="initialNotes" rows="5" placeholder="Add any additional notes, observations, or important information here. Include details about the conversation, any agreements made, or follow-up actions needed..."></textarea>
+                                    <small class="form-hint">Include timestamps, key quotes, or specific details that may be important for case management.</small>
+                                </div>
+                            </div>
                         </div>
+                        
+                        <!-- Form Actions -->
                         <div class="form-actions">
                             <a href="dashboard.html" class="btn btn-secondary">Cancel</a>
                             <button type="button" class="btn btn-secondary" id="save-draft-btn">Save Draft</button>
@@ -530,6 +1104,36 @@
                     </form>
                 </div>
             </main>
+        </div>
+    </div>
+
+    <!-- Left Side Chat Bar -->
+    <button class="chat-bar-toggle-btn" id="chat-bar-toggle-btn" title="Toggle Messages">
+        💬
+    </button>
+    <div class="chat-bar-container" id="chat-bar-container">
+        <div class="chat-bar-header" id="chat-bar-header">
+            <div class="chat-bar-header-left">
+                <div class="chat-bar-icon">💬</div>
+                <div class="chat-bar-title" id="chat-bar-title">Messages</div>
+                <span class="chat-bar-badge" id="chat-bar-badge" style="display: none;">0</span>
+            </div>
+            <div class="chat-bar-header-right">
+                <button class="chat-bar-btn" id="chat-bar-new" title="New Message">
+                    <span>+</span>
+                </button>
+                <button class="chat-bar-btn chat-bar-toggle" id="chat-bar-toggle" title="Close">
+                    <span>×</span>
+                </button>
+            </div>
+        </div>
+        <div class="chat-bar-content" id="chat-bar-content">
+            <div class="chat-bar-conversations" id="chat-bar-conversations">
+                <!-- Conversations will be loaded here -->
+            </div>
+            <div class="chat-bar-chat-view" id="chat-bar-chat-view">
+                <!-- Chat interface will be rendered here -->
+            </div>
         </div>
     </div>
 
@@ -542,7 +1146,9 @@
     <script src="../../js/navigation.js"></script>
     <script src="../../js/notifications.js"></script>
     <script src="../../js/app.js"></script>
-    <script src="../../js/pages/new-case.js?v=3"></script>
+    <script src="../../js/chat.js"></script>
+    <script src="../../js/chat-bar.js"></script>
+    <script src="../../js/pages/new-case.js?v=4"></script>
 </body>
 </html>
 

@@ -1,5 +1,9 @@
 // New Case Page Logic
 
+// Topic navigation state
+let completedTopics = new Set();
+let currentTopic = 'case-type';
+
 document.addEventListener('DOMContentLoaded', () => {
     // Check authentication
     if (!auth.isAuthenticated()) {
@@ -8,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     setupForm();
+    setupTopicNavigation();
     loadFromRequest();
 });
 
@@ -78,6 +83,118 @@ function setupForm() {
         });
     }
 }
+
+function setupTopicNavigation() {
+    console.log('Setting up topic navigation');
+    
+    // Initialize first topic as active
+    setTimeout(() => {
+        showTopic('case-type');
+    }, 100);
+    
+    // Add input change listeners to mark topics as completed
+    const form = document.getElementById('new-case-form');
+    if (form) {
+        form.addEventListener('change', () => {
+            checkTopicCompletion(currentTopic);
+        });
+        
+        form.addEventListener('input', () => {
+            checkTopicCompletion(currentTopic);
+        });
+    }
+    
+    console.log('Topic navigation setup complete');
+}
+
+function showTopic(topicId) {
+    console.log('=== showTopic called with:', topicId);
+    currentTopic = topicId;
+    
+    // Hide all topic sections
+    const allSections = document.querySelectorAll('.topic-section');
+    console.log('Found topic sections:', allSections.length);
+    allSections.forEach(section => {
+        section.classList.remove('active');
+        section.style.display = 'none';
+    });
+    
+    // Show selected topic section
+    const selectedSection = document.querySelector(`[data-topic-section="${topicId}"]`);
+    console.log('Selected section:', selectedSection);
+    if (selectedSection) {
+        selectedSection.classList.add('active');
+        selectedSection.style.display = 'block';
+    } else {
+        console.error('Topic section not found:', topicId);
+    }
+    
+    // Update tab states
+    const allTabs = document.querySelectorAll('.topic-tab');
+    console.log('Found topic tabs:', allTabs.length);
+    allTabs.forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.dataset.topic === topicId) {
+            tab.classList.add('active');
+        }
+    });
+    
+    // Scroll topic bar to show active tab
+    const activeTab = document.querySelector(`.topic-tab[data-topic="${topicId}"]`);
+    if (activeTab) {
+        activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+}
+
+function checkTopicCompletion(topicId) {
+    const section = document.querySelector(`[data-topic-section="${topicId}"]`);
+    if (!section) return;
+    
+    // Get all required fields in this topic
+    const requiredFields = section.querySelectorAll('[required]');
+    let allFilled = true;
+    
+    requiredFields.forEach(field => {
+        if (field.type === 'radio') {
+            const radioGroup = section.querySelectorAll(`[name="${field.name}"]`);
+            const isChecked = Array.from(radioGroup).some(radio => radio.checked);
+            if (!isChecked) allFilled = false;
+        } else if (field.type === 'checkbox') {
+            // For checkbox groups, at least one should be checked
+            const checkboxGroup = section.querySelectorAll(`[name="${field.name}"]`);
+            const isChecked = Array.from(checkboxGroup).some(cb => cb.checked);
+            if (!isChecked) allFilled = false;
+        } else {
+            if (!field.value || field.value.trim() === '') allFilled = false;
+        }
+    });
+    
+    // Mark topic as completed
+    const tab = document.querySelector(`.topic-tab[data-topic="${topicId}"]`);
+    if (tab) {
+        if (allFilled) {
+            tab.classList.add('completed');
+            completedTopics.add(topicId);
+        } else {
+            tab.classList.remove('completed');
+            completedTopics.delete(topicId);
+        }
+    }
+    
+    // Update progress
+    updateProgress();
+}
+
+function updateProgress() {
+    const totalTopics = document.querySelectorAll('.topic-tab').length;
+    const completed = completedTopics.size;
+    const percentage = (completed / totalTopics) * 100;
+    
+    console.log(`Progress: ${completed}/${totalTopics} topics completed`);
+}
+
+// Make showTopic globally available
+window.showTopic = showTopic;
 
 function handleFlowSelection() {
     console.log('=== handleFlowSelection called ===');
@@ -542,7 +659,82 @@ function createCase() {
         });
     }
     
+    // Collect situation data
+    const situationData = {};
+    const situationSection = document.querySelector('[data-topic-section="situation"]');
+    if (situationSection) {
+        // Collect radio buttons
+        situationSection.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+            if (radio.value && radio.name) {
+                situationData[radio.name] = radio.value;
+            }
+        });
+        // Collect text inputs and textareas
+        situationSection.querySelectorAll('input[type="text"], textarea, select').forEach(input => {
+            if (input.value && input.name) {
+                situationData[input.name] = input.value;
+            }
+        });
+        // Collect checkboxes
+        const checkboxGroups = {};
+        situationSection.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+            if (!checkboxGroups[checkbox.name]) {
+                checkboxGroups[checkbox.name] = [];
+            }
+            checkboxGroups[checkbox.name].push(checkbox.value);
+        });
+        Object.assign(situationData, checkboxGroups);
+    }
+    
+    // Collect additional information data
+    const additionalData = {};
+    const additionalSection = document.querySelector('[data-topic-section="additional"]');
+    if (additionalSection) {
+        // Collect radio buttons
+        additionalSection.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+            if (radio.value && radio.name) {
+                additionalData[radio.name] = radio.value;
+            }
+        });
+        // Collect text inputs and textareas
+        additionalSection.querySelectorAll('input[type="text"], textarea, select').forEach(input => {
+            if (input.value && input.name) {
+                additionalData[input.name] = input.value;
+            }
+        });
+        // Collect checkboxes
+        const checkboxGroups = {};
+        additionalSection.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+            if (!checkboxGroups[checkbox.name]) {
+                checkboxGroups[checkbox.name] = [];
+            }
+            checkboxGroups[checkbox.name].push(checkbox.value);
+        });
+        Object.assign(additionalData, checkboxGroups);
+    }
+    
+    // Collect notes data
+    const notesData = {};
+    const notesSection = document.querySelector('[data-topic-section="notes"]');
+    if (notesSection) {
+        // Collect radio buttons
+        notesSection.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+            if (radio.value && radio.name) {
+                notesData[radio.name] = radio.value;
+            }
+        });
+        // Collect text inputs and textareas
+        notesSection.querySelectorAll('textarea, input[type="text"]').forEach(input => {
+            if (input.value && input.name) {
+                notesData[input.name] = input.value;
+            }
+        });
+    }
+    
     caseData.assessmentData = assessmentData;
+    caseData.situationData = situationData;
+    caseData.additionalData = additionalData;
+    caseData.notesData = notesData;
 
     const newCase = dataManager.createCase(caseData);
     

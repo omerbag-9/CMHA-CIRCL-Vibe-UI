@@ -1,0 +1,125 @@
+/* Enhanced Topic Bar Animations and Effects */
+
+/* Pulse animation for active tab */
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 8px 20px rgba(0, 166, 81, 0.35);
+    }
+    50% {
+        box-shadow: 0 8px 24px rgba(0, 166, 81, 0.5);
+    }
+}
+
+.topic-tab.active {
+    animation: pulse-glow 2s infinite;
+}
+
+/* Checkmark pop animation */
+@keyframes checkmark-pop {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.topic-tab.completed::after {
+    animation: checkmark-pop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Glassmorphism effect for topic sections */
+.topic-section {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+/* Smooth hover effects for form elements inside topics */
+.topic-section .form-group input[type="text"],
+.topic-section .form-group input[type="tel"],
+.topic-section .form-group input[type="email"],
+.topic-section .form-group select,
+.topic-section .form-group textarea {
+    transition: all 0.3s;
+}
+
+.topic-section .form-group input:focus,
+.topic-section .form-group select:focus,
+.topic-section .form-group textarea:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 166, 81, 0.15);
+}
+
+/* Enhanced radio and checkbox labels */
+.topic-section .radio-label,
+.topic-section .checkbox-label {
+    transition: all 0.2s;
+}
+
+.topic-section .radio-label:hover,
+.topic-section .checkbox-label:hover {
+    background: #f8f9fa;
+    transform: translateX(4px);
+}
+
+/* Category title enhancement */
+.topic-section .category-title {
+    position: relative;
+    padding-left: 12px;
+}
+
+.topic-section .category-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 24px;
+    background: var(--primary-green);
+    border-radius: 4px;
+}
+
+/* Add subtle gradient to section headers */
+.topic-section h3 {
+    position: relative;
+    overflow: hidden;
+}
+
+.topic-section h3::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100%;
+    background: linear-gradient(to left, rgba(255, 255, 255, 0.2), transparent);
+}
+
+/* Navigation hint for first load */
+.topic-bar::after {
+    content: '← Scroll for more';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(to left, #f8f9fa, transparent);
+    padding: 8px 24px 8px 40px;
+    font-size: 12px;
+    color: #999;
+    font-weight: 600;
+    pointer-events: none;
+    opacity: 0;
+    animation: hint-fade 3s ease-in-out 2s;
+}
+
+@keyframes hint-fade {
+    0%, 80%, 100% { opacity: 0; }
+    20%, 60% { opacity: 1; }
+}
+
